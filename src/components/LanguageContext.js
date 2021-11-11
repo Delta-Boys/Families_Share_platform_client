@@ -18,7 +18,7 @@ class LanguageProvider extends React.Component {
     super(props);
     let language = "";
     if (localStorage.getItem("language")) {
-      language = localStorage.getItem("language");
+      language = localStorage.getItem("language").toLowerCase();
     } else {
       localStorage.setItem(
         "language",
