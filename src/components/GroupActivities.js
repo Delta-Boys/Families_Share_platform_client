@@ -43,6 +43,16 @@ const styles = {
     backgroundColor: "#ff6f00",
     zIndex: 100,
     fontSize: "2rem"
+  },
+  addActivityRequest: {
+    right: "0.5rem",
+    height: "4rem",
+    width: "4rem",
+    borderRadius: "50%",
+    border: "solid 0.5px #999",
+    backgroundColor: "#ff6f00",
+    zIndex: 100,
+    fontSize: "2rem"
   }
 };
 
@@ -312,6 +322,26 @@ class GroupActivities extends React.Component {
                 aria-label="addPlan"
                 className={classes.addPlan}
                 onClick={() => this.add("plans")}
+              >
+                <i className="fas fa-calendar" />
+              </Fab>
+            </div>
+            <div
+              className="row no-gutters"
+              style={{
+                bottom: "26rem",
+                zIndex: 100,
+                position: "fixed",
+                right: "7%",
+                alignItems: "center"
+              }}
+            >
+              <div className=" activitiesFabLabel">{texts.newActivityRequest}</div>
+              <Fab
+                color="primary"
+                aria-label="addActivityRequest"
+                className={classes.addActivityRequest}
+                onClick={() => this.add("activityrequests")}
               >
                 <i className="fas fa-calendar" />
               </Fab>

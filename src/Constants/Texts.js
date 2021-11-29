@@ -835,7 +835,8 @@ const en = {
     plansHeader: "Pending plans",
     export: "Export agenda",
     newPlan: "Advanced planning",
-    newActivity: "New activity"
+    newActivity: "New activity",
+    newActivityRequest: "New activity request"
   },
   activityListItem: {
     every: "Every",
@@ -1139,6 +1140,30 @@ const en = {
     acceptTerms:
       "I acknowledge that this information will be disclosed with the group members " +
       "directly involved in the childcare activities."
+  },
+  createActivityRequestScreen: {
+    backNavTitle: "New activity request"
+  },
+  createActivityRequestStepper: {
+    pendingMessage: "The activity is pending confirmation from an admin",
+    continue: "Continue",
+    cancel: "Cancel",
+    finish: "Create",
+    save: "Save",
+    stepLabels: ["Children", "Information", "Date"]
+  },
+  createActivityRequestChildren: {
+    noChildrenError: "Activity request requires children"
+  },
+  createActivityRequestInformation: {
+    color: "Color of the request",
+    description: "Description (optional)",
+    name: "Name of the request"
+  },
+  createActivityRequestDate: {
+    header: "Select a day",
+    from: "From",
+    to: "To"
   },
   createActivityScreen: {
     backNavTitle: "New activity"
