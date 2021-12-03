@@ -6,10 +6,12 @@ import { withStyles } from "@material-ui/core/styles";
 import withLanguage from "./LanguageContext";
 import Texts from "../Constants/Texts";
 import ActivityOptionsModal from "./OptionsModal";
-import ActivityListItem from "./ActivityListItem";
-import PlanListItem from "./PlanListItem";
 import ConfirmDialog from "./ConfirmDialog";
 import Log from "./Log";
+
+import ActivityListItem from "./ActivityListItem";
+import PlanListItem from "./PlanListItem";
+import ActivityRequestListItem from "./ActivityRequestListItem";
 
 const styles = {
   add: {
@@ -80,6 +82,18 @@ const fetchPlans = groupId => {
     });
 };
 
+const fetchActivityRequests = groupId => {
+  return axios
+    .get(`/api/groups/${groupId}/activityrequests`)
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      Log.error(error);
+      return [];
+    });
+};
+
 class GroupActivities extends React.Component {
   constructor(props) {
     super(props);
@@ -97,6 +111,7 @@ class GroupActivities extends React.Component {
     const { group_id: groupId } = group;
     const activities = await fetchActivites(groupId);
     const plans = await fetchPlans(groupId);
+    const activityRequests = await fetchActivityRequests(groupId);
     const acceptedActivities = activities.filter(
       activity => activity.status === "accepted"
     );
@@ -106,7 +121,8 @@ class GroupActivities extends React.Component {
       fetchedData: true,
       activities: acceptedActivities,
       pendingActivities,
-      plans
+      plans,
+      activityRequests
     });
   }
 
@@ -146,6 +162,20 @@ class GroupActivities extends React.Component {
         {plans.map((plan, index) => (
           <li key={index}>
             <PlanListItem plan={plan} groupId={groupId} />
+          </li>
+        ))}
+      </ul>
+    );
+  };
+
+  renderactivityRequests = () => {
+    const { group, activityRequests } = this.state;
+    const { group_id: groupId } = group;
+    return (
+      <ul>
+        {activityRequests.map((req, index) => (
+          <li key={index}>
+            <ActivityRequestListItem activityRequest={req} groupId={groupId} />
           </li>
         ))}
       </ul>
@@ -201,7 +231,8 @@ class GroupActivities extends React.Component {
       pendingActivities,
       showAddOptions,
       fetchedData,
-      plans
+      plans,
+      activityRequests
     } = this.state;
     const { name } = group;
     const texts = Texts[language].groupActivities;
@@ -359,6 +390,12 @@ class GroupActivities extends React.Component {
             <div id="groupActivitiesContainer" className="horizontalCenter">
               <h1 className="">{texts.plansHeader}</h1>
               {this.renderPlans()}
+            </div>
+          )}
+          {fetchedData && activityRequests.length > 0 && (
+            <div id="groupActivitiesContainer" className="horizontalCenter">
+              <h1 className="">{texts.activityRequestsHeader}</h1>
+              {this.renderactivityRequests()}
             </div>
           )}
         </div>

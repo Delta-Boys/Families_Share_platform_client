@@ -833,6 +833,7 @@ const en = {
     exportConfirm: "Are you sure you want to export the group agenda?",
     activitiesHeader: "Activities of the group",
     plansHeader: "Pending plans",
+    activityRequestsHeader: "Outstanding activity requests",
     export: "Export agenda",
     newPlan: "Advanced planning",
     newActivity: "New activity",
