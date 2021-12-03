@@ -12,7 +12,6 @@ import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import StepContent from "@material-ui/core/StepContent";
 import Button from "@material-ui/core/Button";
-import moment from "moment";
 import axios from "axios";
 import * as path from "lodash.get";
 
@@ -24,7 +23,6 @@ import LoadingSpinner from "./LoadingSpinner";
 import CreateActivityRequestChildren from "./CreateActivityRequestChildren";
 import CreateActivityRequestInformation from "./CreateActivityRequestInformation";
 import CreateActivityRequestDate from "./CreateActivityRequestDate";
-import CreateActivityTimeslots from "./CreateActivityTimeslots";
 
 const muiTheme = createMuiTheme({
   typography: {
@@ -226,34 +224,41 @@ class CreateActivityRequestStepper extends React.Component {
     }
   };
 
+  formatDataToActivityRequest(children, information, dates, groupId, userId) {
+    return {
+      group_id: groupId,
+      creator_id: userId,
+      name: information.name,
+      description: information.description,
+      color: information.color,
+      children: children.selectedChildren,
+      date: dates.selectedDay,
+      startTime: dates.startTime,
+      endTime: dates.endTime
+    };
+  }
+
   createActivityRequest() {
 
-    const { match, history, enqueueSnackbar, language } = this.props;
-    const texts = Texts[language].createActivityStepper;
+    const { match, history } = this.props;
     const { groupId } = match.params;
-    const { information, dates, timeslots } = this.state;
+    const { children, information, dates } = this.state;
     const userId = JSON.parse(localStorage.getItem("user")).id;
-        
+
+    const activityReq = this.formatDataToActivityRequest(children, information, dates, groupId, userId);
 
     this.setState({ creating: true });
-    
-    history.goBack();
 
-    // axios
-    //   .post(`/api/groups/${groupId}/activities`, { activity, events })
-    //   .then(response => {
-    //     if (response.data.status === "pending") {
-    //       enqueueSnackbar(texts.pendingMessage, {
-    //         variant: "info"
-    //       });
-    //     }
-    //     Log.info(response);
-    //     history.goBack();
-    //   })
-    //   .catch(error => {
-    //     Log.error(error);
-    //     history.goBack();
-    //   });
+    axios
+      .post(`/api/groups/${groupId}/activityrequests`, { activityReq })
+      .then(response => {
+        Log.info(response);
+        history.goBack();
+      })
+      .catch(error => {
+        Log.error(error);
+        history.goBack();
+      });
   }
 
   handleContinue = () => {
