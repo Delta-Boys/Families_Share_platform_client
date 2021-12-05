@@ -286,6 +286,13 @@
 }
 /*ACTIVITY SCREEN END*/
 
+/*ACTIVITY REQUEST SCREEN*/
+#activityRequestMainContainer {
+  margin-top: 5.6rem;
+  padding: 5%;
+}
+/*ACTIVITY REQUEST SCREEN END*/
+
 /*ADDITIONAL INFO SCREEN*/
 #additionalInfoScreenHeaderContainer {
   height: 6rem;

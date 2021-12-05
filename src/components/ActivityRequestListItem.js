@@ -12,8 +12,8 @@ class ActivityRequestListItem extends React.Component {
   }
 
   handleActivityRequestClick = event => {
-    // const { history } = this.props;
-    // history.push(`${pathname}/${event.currentTarget.id}`);
+    const { history, groupId } = this.props;
+    history.push(`/groups/${groupId}/activityRequests/${event.currentTarget.id}`);
   };
 
   getDateString = () => {
@@ -32,7 +32,7 @@ class ActivityRequestListItem extends React.Component {
           onKeyPress={this.handleActivityRequestClick}
           className="row no-gutters"
           style={{ minHheight: "7rem", cursor: "pointer" }}
-          id={activityRequest.activity_id}
+          id={activityRequest.req_id}
           onClick={this.handleActivityRequestClick}
         >
           <div className="col-2-10">

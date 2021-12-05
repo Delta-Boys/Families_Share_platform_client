@@ -1212,6 +1212,14 @@ const en = {
     confirm: "OK",
     cancel: "CANCEL"
   },
+  activityRequestScreen: {
+    volunteers: "Volunteers",
+    children: "Children",
+    color: "Color",
+    deleteDialogTitle: "Are you sure you want to delete this activity?",
+    delete: "Delete",
+    infoHeader: "Activity Request details:"
+  },
   activityScreen: {
     pdfToaster:
       "The activity is being exported in pdf format. You will shorty receive it via e-mail",

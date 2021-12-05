@@ -201,7 +201,7 @@ class ActivityScreen extends React.Component {
         <div className="row" style={{ margin: "1rem 0" }}>
           <Avatar
             route={
-              type === "parents"
+              type === "children"
                 ? `/profiles/groupmember/children/${profile.child_id}`
                 : `/profiles/${profile.user_id}/info`
             }
