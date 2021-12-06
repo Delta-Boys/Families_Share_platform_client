@@ -219,11 +219,10 @@ class ActivityRequestScreen extends React.Component {
   };
 
   handleDelete = () => {
-    const { match, history } = this.props;
-    const { groupId, activityId } = match.params;
+    const { match: { params: { groupId, activityRequestId } }, history } = this.props;
     this.setState({ pendingRequest: true })
     axios
-      .delete(`/api/groups/${groupId}/activityrequests/${activityId}`)
+      .delete(`/api/groups/${groupId}/activityrequests/${activityRequestId}`)
       .then(response => {
         Log.info(response);
         history.goBack();
