@@ -54,7 +54,7 @@ class CreateActivityRequestChildren extends React.Component {
       <div id="createActivityRequestChildrenContainer">
         <p>{usersChildren.length === 0 ?
           texts.noChildrenError : ""}</p>
-        <div class="row no-gutters">
+        <div className="row no-gutters">
           {usersChildren.map((child, index) => (
             <TimeslotSubcribe
               key={index}
