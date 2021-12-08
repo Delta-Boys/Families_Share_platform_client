@@ -1307,6 +1307,15 @@ const en = {
     save: "SAVE",
     location: "Location (optional)"
   },
+  editActivityRequestScreen: {
+    backNavTitle: "Edit Activity Request",
+    color: "Color of the request",
+    description: "Description (optional)",
+    name: "Name of the request",
+    to: "To",
+    from: "From",
+    save: "SAVE",
+  },
   agendaView: {
     timeslots: "Timeslots",
     available: " available",

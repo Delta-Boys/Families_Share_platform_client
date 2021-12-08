@@ -89,6 +89,10 @@ const EditActivityScreen = Loadable({
   loader: () => import("./components/EditActivityScreen"),
   loading: () => Loading
 });
+const EditActivityRequestScreen = Loadable({
+  loader: () => import("./components/EditActivityRequestScreen"),
+  loading: () => Loading
+});
 const AdditionalInfoScreen = Loadable({
   loader: () => import("./components/AdditionalInfoScreen"),
   loading: () => Loading
@@ -375,6 +379,10 @@ class App extends React.Component {
               <PrivateRoute
                 path="/groups/:groupId/activities/:activityId"
                 component={ActivityScreen}
+              />
+              <PrivateRoute
+                path="/groups/:groupId/activityRequests/:activityRequestId/edit"
+                component={EditActivityRequestScreen}
               />
               <PrivateRoute
                 path="/groups/:groupId/activityRequests/:activityRequestId"
