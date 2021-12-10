@@ -308,9 +308,7 @@ class GroupActivities extends React.Component {
             color="primary"
             aria-label="Add"
             className={classes.add}
-            onClick={() =>
-              userIsAdmin ? this.toggleAdd() : this.add("activities")
-            }
+            onClick={this.toggleAdd}
           >
             <i className={showAddOptions ? "fas fa-times" : "fas fa-plus"} />
           </Fab>
@@ -347,26 +345,6 @@ class GroupActivities extends React.Component {
                 alignItems: "center"
               }}
             >
-              <div className=" activitiesFabLabel">{texts.newPlan}</div>
-              <Fab
-                color="primary"
-                aria-label="addPlan"
-                className={classes.addPlan}
-                onClick={() => this.add("plans")}
-              >
-                <i className="fas fa-calendar" />
-              </Fab>
-            </div>
-            <div
-              className="row no-gutters"
-              style={{
-                bottom: "26rem",
-                zIndex: 100,
-                position: "fixed",
-                right: "7%",
-                alignItems: "center"
-              }}
-            >
               <div className=" activitiesFabLabel">{texts.newActivityRequest}</div>
               <Fab
                 color="primary"
@@ -377,6 +355,26 @@ class GroupActivities extends React.Component {
                 <i className="fas fa-calendar" />
               </Fab>
             </div>
+            {userIsAdmin && <div
+              className="row no-gutters"
+              style={{
+                bottom: "26rem",
+                zIndex: 100,
+                position: "fixed",
+                right: "7%",
+                alignItems: "center"
+              }}
+            >
+              <div className=" activitiesFabLabel">{texts.newPlan}</div>
+              <Fab
+                color="primary"
+                aria-label="addPlan"
+                className={classes.addPlan}
+                onClick={() => this.add("plans")}
+              >
+                <i className="fas fa-calendar" />
+              </Fab>
+            </div>}
           </React.Fragment>
         )}
         <div style={{ paddingBottom: "6rem" }}>
