@@ -102,7 +102,8 @@ class GroupActivities extends React.Component {
       group,
       showAddOptions: false,
       fetchedData: false,
-      optionsModalIsOpen: false
+      optionsModalIsOpen: false,
+      confirmDialogIsOpen: false,      
     };
   }
 
