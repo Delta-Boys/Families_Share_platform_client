@@ -104,8 +104,8 @@ const MyMonthEvent = ({ event, history }) => {
       );
     }
     case 'request': {
-      const { group_id, req_id } = event;
-      const pathname = `/groups/${group_id}/activityRequests/${req_id}`;
+      const { group_id, _id } = event;
+      const pathname = `/groups/${group_id}/activityRequests/${_id}`;
       return (
         <div role="button" tabIndex={-42} onClick={() => history.push(pathname)}>
           {event.title}

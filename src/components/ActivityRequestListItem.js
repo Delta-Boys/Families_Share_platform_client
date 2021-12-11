@@ -32,7 +32,7 @@ class ActivityRequestListItem extends React.Component {
           onKeyPress={this.handleActivityRequestClick}
           className="row no-gutters"
           style={{ minHheight: "7rem", cursor: "pointer" }}
-          id={activityRequest.req_id}
+          id={activityRequest._id}
           onClick={this.handleActivityRequestClick}
         >
           <div className="col-2-10">
