@@ -1218,7 +1218,9 @@ const en = {
     color: "Color",
     deleteDialogTitle: "Are you sure you want to delete this activity?",
     delete: "Delete",
-    infoHeader: "Activity Request details:"
+    infoHeader: "Activity Request details:",
+    candidateActivities: "Possible activities",
+    confirmationSuccessful: "Activity participation confirmed",
   },
   activityScreen: {
     pdfToaster:
@@ -1315,6 +1317,15 @@ const en = {
     to: "To",
     from: "From",
     save: "SAVE",
+  },
+  acceptActivityRequestScreen: {
+    backNavTitle: "Accept Activity Request",
+    color: "Color",
+    description: "Description (optional)",
+    name: "Name of the new activity",
+    location: "Location (optional)",
+    pendingMessage: "The activity is pending confirmation from an admin",
+    createdMessage: "",
   },
   agendaView: {
     timeslots: "Timeslots",

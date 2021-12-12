@@ -113,6 +113,10 @@ const ActivityRequestScreen = Loadable({
   loader: () => import("./components/ActivityRequestScreen"),
   loading: () => Loading
 })
+const AcceptActivityRequestScreen = Loadable({
+  loader: () => import("./components/AcceptActivityRequestScreen"),
+  loading: () => Loading
+})
 const CreateActivityScreen = Loadable({
   loader: () => import("./components/CreateActivityScreen"),
   loading: () => Loading
@@ -383,6 +387,10 @@ class App extends React.Component {
               <PrivateRoute
                 path="/groups/:groupId/activityRequests/:activityRequestId/edit"
                 component={EditActivityRequestScreen}
+              />
+              <PrivateRoute
+                path="/groups/:groupId/activityRequests/:activityRequestId/accept"
+                component={AcceptActivityRequestScreen}
               />
               <PrivateRoute
                 path="/groups/:groupId/activityRequests/:activityRequestId"

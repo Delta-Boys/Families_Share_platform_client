@@ -13,6 +13,7 @@ import LoadingSpinner from "./LoadingSpinner";
 import Images from "../Constants/Images";
 import Log from "./Log";
 import Avatar from "./Avatar";
+import TimeslotPreview from "./TimeslotPreview";
 
 const styles = {
   add: {
@@ -86,7 +87,8 @@ class ActivityRequestScreen extends React.Component {
       confirmDialogIsOpen: false,
       action: "",
       userCanEdit: false,
-      userIsCreator: false
+      userIsCreator: false,
+      candidateActivities: [],
     };
   }
 
@@ -110,7 +112,15 @@ class ActivityRequestScreen extends React.Component {
     const userIsCreator = userId === activityRequest.creator_id;
     const userCanEdit = userIsAdmin || userIsCreator;
 
-    this.setState({ activityRequest, children, fetchedData: true, userCanEdit, userIsCreator });
+    const candidateTimeslots = await axios
+      .get(`/api/groups/${groupId}/activityrequests/${activityRequest._id}/compatibleTimeslots`)
+      .then(response => response.data)
+      .catch(error => {
+        Log.error(error);
+        return [];
+      });
+
+    this.setState({ activityRequest, children, fetchedData: true, userCanEdit, userIsCreator, candidateTimeslots });
   }
 
   handleRedirect = (suspended, child_id) => {
@@ -188,6 +198,40 @@ class ActivityRequestScreen extends React.Component {
     history.push(`${pathname}/edit`);
   };
 
+  handleAccept = () => {
+    const { history } = this.props;
+    const { pathname } = history.location;
+    history.push(`${pathname}/accept`);
+  };
+
+  handleConfirmCandidate = async timeslot => {
+    this.setState({ pendingRequest: true })
+    var shared = Object.assign({}, timeslot.extendedProperties.shared);
+    const { activityRequest } = this.state;
+    const { enqueueSnackbar, history, language } = this.props;
+    const texts = Texts[language].activityRequestScreen;
+
+    try {
+      var children = JSON.parse(shared.children).concat(activityRequest.children);
+      children = [...new Set(children)];
+      children = JSON.stringify(children);
+
+      await axios.patch(`/api/groups/${shared.groupId}/activities/${shared.activityId}/timeslots/${timeslot.id}`, {
+        extendedProperties: { shared: { ...shared, children } }
+      });
+
+      await axios.delete(`/api/groups/${shared.groupId}/activityrequests/${activityRequest._id}`);
+
+      enqueueSnackbar(texts.confirmationSuccessful);
+      history.goBack();
+    }
+    catch (error) {
+      enqueueSnackbar('ERROR');
+      this.setState({ pendingRequest: false })
+      Log.error(error);
+    }
+  }
+
   handleConfirmDialogOpen = action => {
     this.setState({
       confirmDialogIsOpen: true,
@@ -242,7 +286,8 @@ class ActivityRequestScreen extends React.Component {
       optionsModalIsOpen,
       confirmDialogIsOpen,
       userCanEdit,
-      userIsCreator
+      userIsCreator,
+      candidateTimeslots
     } = this.state;
     const texts = Texts[language].activityRequestScreen;
     const options = [
@@ -347,19 +392,39 @@ class ActivityRequestScreen extends React.Component {
               </div>
             </div>
             {this.renderChildren()}
+
+            {candidateTimeslots.length > 0 && <div className="row no-gutters" style={rowStyle}>
+              <div className="col-1-10">
+                <i className="fas fa-certificate activityInfoIcon"></i>
+              </div>
+              <div className="col-8-10">
+                <div className="activityInfoDescription">{texts.candidateActivities}</div>
+              </div>
+            </div>
+            }
+            {candidateTimeslots.map((timeslot, timeslotIndex) => {
+              return (
+                <div key={timeslotIndex} className="row no-gutters">
+                  <div className="col-8-10" style={{ margin: "1rem 0" }}>
+                    <TimeslotPreview timeslot={timeslot} />
+                  </div>
+                  {userIsCreator && <div className="col-2-10" role="button" onClick={() => this.handleConfirmCandidate(timeslot)}>
+                    <i className="fas fa-check center" style={{ fontSize: "3em" }}></i>
+                  </div>}
+                </div>
+              );
+            })}
+
           </div>
           {userIsCreator || <div>
             <div className="row no-gutters" style={rowStyle}>
-              <div className="col-5-10">
-                YES
-              </div>
-              <div className="col-5-10">
-                IGNORE
-              </div>
+              <button onClick={this.handleAccept} type="button" className="acceptButton center">
+                Accept Request
+              </button>
             </div>
           </div>}
         </div>
-      </React.Fragment>
+      </React.Fragment >
     ) : (
       <LoadingSpinner />
     );
