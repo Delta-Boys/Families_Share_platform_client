@@ -92,6 +92,7 @@ const DayHeader = () => {
 
 const MyMonthEvent = ({ event, history }) => {
   switch (event.type) {
+    default:
     case 'activity': {
       const { activityId } = event.extendedProperties.shared;
       const timeslotId = event.id;
@@ -338,6 +339,7 @@ class Calendar extends React.Component {
 
   eventStyleGetter = event => {
     switch (event.type) {
+      default:
       case 'activity':
         return {
           style: {
