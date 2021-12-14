@@ -220,6 +220,12 @@ const en = {
       "If you save these edits all participants will be unsubscribed. Confirm edits?",
     deleteConfirm: "Are you sure you want to delete this timeslot?"
   },
+  timeslotInviteScreen: {
+    title: "Invite to",
+    confirmInvite: "Are you sure you want to invite this person?",
+    inviteSent: "Invite submitted",
+    inviteFailde: "Failed to submit invite",
+  },
   timeslotScreen: {
     ongoing: "Ongoing",
     completed: "Completed",
@@ -248,6 +254,7 @@ const en = {
     child: "child",
     children: "Children",
     emergency: "EMERGENCY",
+    sendInvites: "Invite other user",
     signup: "signed up",
     userSubscribe: "You have added yourself to the activity",
     userUnsubscribe: "You have removed yourself from the activity",
