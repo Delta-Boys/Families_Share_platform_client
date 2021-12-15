@@ -1524,6 +1524,21 @@
   margin-right: auto;
   background-color: #be1622;
 }
+.inviteButton {
+  border: none;
+  padding: 0 0;
+  line-height: 3.6rem;
+  border-radius: 3px;
+  color: #ffffff;
+  height: 3.6rem;
+  text-align: center;
+  font-size: 1.4rem;
+  max-width: 45rem;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #00838f;
+}
 .participantsText {
   font-size: 1.6rem;
   padding-left: 1rem;

@@ -165,6 +165,10 @@ const TimeslotEmergencyScreen = Loadable({
   loader: () => import("./components/TimeslotEmergencyScreen"),
   loading: () => Loading
 });
+const TimeslotInviteScreen = Loadable({
+  loader: () => import("./components/TimeslotInviteScreen"),
+  loading: () => Loading
+});
 const EditTimeslotScreen = Loadable({
   loader: () => import("./components/EditTimeslotScreen"),
   loading: () => Loading
@@ -370,6 +374,11 @@ class App extends React.Component {
                 exact
                 path="/groups/:groupId/activities/:activityId/timeslots/:timeslotId/emergency"
                 component={TimeslotEmergencyScreen}
+              />
+              <PrivateRoute
+                exact
+                path="/groups/:groupId/activities/:activityId/timeslots/:timeslotId/invite"
+                component={TimeslotInviteScreen}
               />
               <PrivateRoute
                 path="/groups/:groupId/activities/:activityId/timeslots/:timeslotId"
