@@ -10,6 +10,7 @@ import TimeslotsList from "./TimeslotsList";
 import Texts from "../Constants/Texts";
 import Log from "./Log";
 import Images from "../Constants/Images";
+import TimeslotPreview from "./TimeslotPreview";
 
 const getMyGroups = userId => {
   return axios
@@ -57,6 +58,13 @@ const updateDeviceToken = (userId, deviceToken) => {
     });
 };
 
+const groupBy = function (xs, key) {
+  return xs.reduce(function (rv, x) {
+    (rv[x[key]] = rv[x[key]] || []).push(x);
+    return rv;
+  }, {});
+};
+
 class MyFamiliesShareScreen extends React.Component {
   constructor() {
     super();
@@ -64,7 +72,8 @@ class MyFamiliesShareScreen extends React.Component {
       fetchedUserInfo: false,
       myTimeslots: [],
       myGroups: [],
-      pendingInvites: 0
+      pendingInvites: 0,
+      timeslotsInvitedTo: [],
     };
   }
 
@@ -99,13 +108,44 @@ class MyFamiliesShareScreen extends React.Component {
         uniqueDates.push(date);
       }
     });
+
+    const timeslotInvites = await axios
+      .get(`/api/users/invites`, { params: { status: "pending" } })
+      .then(response => response.data);
+    const timeslotInvitesMap = groupBy(timeslotInvites, 'timeslot_id');
+    const timeslotIdsInvitedTo = [...new Set(timeslotInvites.map(t => t.timeslot_id))];
+    const timeslotsInvitedTo = await Promise.all(
+      timeslotIdsInvitedTo.map(timeslot_id => {
+        const { group_id, activity_id } = timeslotInvitesMap[timeslot_id][0];
+        return axios
+          .get(`/api/groups/${group_id}/activities/${activity_id}/timeslots/${timeslot_id}`)
+          .then(response => response.data);
+      })
+    )
+    const names = await Promise.all(timeslotInvites.map(invite =>
+      invite.invitee_id === userId
+        ? Promise.resolve('you')
+        : axios
+          .get("/api/children", { params: { ids: [invite.invitee_id] } })
+          .then(response => response.data[0].given_name)
+    ));
+    names.forEach((name, i) => {
+      timeslotInvites[i].invitee_name = name
+    })
+    timeslotsInvitedTo.forEach(timeslot => {
+      const invites = timeslotInvitesMap[timeslot.id];
+      timeslot.invites = invites;
+      timeslot.invitedNames = invites.map(invite => invite.invitee_name);
+    });
+
     this.setState({
       fetchedUserInfo: true,
       unreadNotifications,
       dates: uniqueDates,
       myGroups,
       myTimeslots,
-      pendingInvites
+      pendingInvites,
+      timeslotsInvitedTo,
     });
   }
 
@@ -124,6 +164,62 @@ class MyFamiliesShareScreen extends React.Component {
       </div>
     );
   };
+
+  handleInviteAccept = async timeslotIndex => {
+    const { timeslotsInvitedTo } = this.state;
+    const timeslot = timeslotsInvitedTo[timeslotIndex];
+    await axios.post(`/api/users/invites/${timeslot.id}/accept`);
+    window.location.reload(false);
+  }
+
+  handleInviteDecline = async timeslotIndex => {
+    const { timeslotsInvitedTo } = this.state;
+    const timeslot = timeslotsInvitedTo[timeslotIndex];
+    await axios.post(`/api/users/invites/${timeslot.id}/decline`);
+    this.setState({ timeslotIdsInvitedTo: timeslotsInvitedTo.splice(timeslotIndex, 1) });
+  }
+
+  renderTimeslotInvitesSection = () => {
+    const { language } = this.props;
+    const { timeslotsInvitedTo } = this.state;
+    const texts = Texts[language].myFamiliesShareScreen;
+    return timeslotsInvitedTo.length > 0 && (
+      <div className="myGroupsContainer">
+        <div className="myGroupsContainerHeader">{texts.myTimeslotInvites}</div>
+        <ul>
+          {timeslotsInvitedTo.map((timeslot, timeslotIndex) => {
+            return (
+              <li key={timeslotIndex} style={{ margin: "1rem 0" }}>
+                <div> <span style={{ textTransform: 'capitalize' }}>{timeslot.invitedNames.join(', ')}</span>{texts.invitedTo}</div>
+                <div className="row no-gutters">
+                  <div className="col-6-10">
+                    <TimeslotPreview timeslot={timeslot} />
+                  </div>
+                  <div className="col-2-10">
+                    <button
+                      type="button"
+                      className="transparentButton center"
+                      onClick={() => this.handleInviteAccept(timeslotIndex)}
+                    >
+                      <i className="fas fa-check" />
+                    </button>
+                  </div>
+                  <div className="col-2-10">
+                    <button
+                      type="button"
+                      className="transparentButton center"
+                      onClick={() => this.handleInviteDecline(timeslotIndex)}
+                    >
+                      <i className="fas fa-times" />
+                    </button>
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </div>);
+  }
 
   renderTimeslotsSection = () => {
     const { language } = this.props;
@@ -192,6 +288,7 @@ class MyFamiliesShareScreen extends React.Component {
           {fetchedUserInfo && (
             <div id="myFamiliesShareMainContainer">
               {this.renderGroupSection()}
+              {this.renderTimeslotInvitesSection()}
               {this.renderTimeslotsSection()}
               {this.renderPromptAction()}
             </div>

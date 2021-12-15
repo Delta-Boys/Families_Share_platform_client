@@ -943,6 +943,8 @@ const en = {
       "You are not yet in a group, use the lateral menu to find one",
     myActivitiesPrompt:
       "Here you will see your future activities after you have signed up for one or more groups",
+    myTimeslotInvites: "My invites",
+    invitedTo: " were invited to:",
     joinPrompt: "JOIN GROUP",
     createPrompt: "CREATE GROUP"
   },
