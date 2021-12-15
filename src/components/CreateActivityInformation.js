@@ -15,21 +15,23 @@ class CreateActivityInformation extends React.Component {
       description,
       cost,
       color,
-      link
+      link,
+      greenPassRequired
     } = this.props;
-    this.state = { color, cost, description, link, location, name };
+    this.state = { color, cost, description, link, location, name, greenPassRequired };
+    this.state.greenPassRequired = false;
     handleSubmit(this.state, this.validate(this.state));
     autosize(document.querySelectorAll("textarea"));
   }
 
-  validate = state => {
+  validate = (state) => {
     if (state.color && state.name) {
       return true;
     }
     return false;
   };
 
-  handleChange = event => {
+  handleChange = (event) => {
     const state = Object.assign({}, this.state);
     const { name, value } = event.target;
     const { handleSubmit } = this.props;
@@ -38,7 +40,13 @@ class CreateActivityInformation extends React.Component {
     this.setState(state);
   };
 
-  handleColorChange = color => {
+  handleGreenPassCheck = () => {
+    var { greenPassRequired } = this.state;
+    greenPassRequired = !greenPassRequired;
+    this.setState({ greenPassRequired });
+  };
+
+  handleColorChange = (color) => {
     const { handleSubmit } = this.props;
     const state = Object.assign({}, this.state);
     state.color = color.hex;
@@ -79,7 +87,7 @@ class CreateActivityInformation extends React.Component {
               className="center"
               placeholder={texts.description}
               value={description}
-              onChange={event => {
+              onChange={(event) => {
                 this.handleChange(event);
                 autosize(document.querySelectorAll("textarea"));
               }}
@@ -116,6 +124,20 @@ class CreateActivityInformation extends React.Component {
             />
           </div>
         </div>
+
+        <div className="row no-gutters">
+          <div className="col-2-10">
+            <i className="fas fa-biohazard center" />
+          </div>
+          <div className="col-6-10">
+            <h1 className="verticalCenter">{texts.greenPassRequiredYes}</h1>
+          </div>
+          <div className="col-1-10">
+            <input type="checkbox" name="greenPassRequired"
+                   onChange={this.handleGreenPassCheck} />
+          </div>
+        </div>
+
         <div className="row no-gutters" style={rowStyle}>
           <div className="col-2-10">
             <i
@@ -153,7 +175,8 @@ CreateActivityInformation.propTypes = {
   color: PropTypes.string,
   handleSubmit: PropTypes.func,
   language: PropTypes.string,
-  link: PropTypes.string
+  link: PropTypes.string,
+  greenPassRequired: PropTypes.bool
 };
 
 export default withLanguage(CreateActivityInformation);

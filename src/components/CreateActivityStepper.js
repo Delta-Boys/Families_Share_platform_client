@@ -229,7 +229,8 @@ class CreateActivityStepper extends React.Component {
       location: information.location,
       repetition: dates.repetition,
       repetition_type: dates.repetitionType,
-      different_timeslots: timeslots.differentTimeslots
+      different_timeslots: timeslots.differentTimeslots,
+      greenpass_required: information.greenPassRequired
     };
   };
 
