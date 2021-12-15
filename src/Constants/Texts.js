@@ -833,9 +833,11 @@ const en = {
     exportConfirm: "Are you sure you want to export the group agenda?",
     activitiesHeader: "Activities of the group",
     plansHeader: "Pending plans",
+    activityRequestsHeader: "Outstanding activity requests",
     export: "Export agenda",
     newPlan: "Advanced planning",
-    newActivity: "New activity"
+    newActivity: "New activity",
+    newActivityRequest: "New activity request"
   },
   activityListItem: {
     every: "Every",
@@ -1140,6 +1142,30 @@ const en = {
       "I acknowledge that this information will be disclosed with the group members " +
       "directly involved in the childcare activities."
   },
+  createActivityRequestScreen: {
+    backNavTitle: "New activity request"
+  },
+  createActivityRequestStepper: {
+    pendingMessage: "The activity is pending confirmation from an admin",
+    continue: "Continue",
+    cancel: "Cancel",
+    finish: "Create",
+    save: "Save",
+    stepLabels: ["Children", "Information", "Date"]
+  },
+  createActivityRequestChildren: {
+    noChildrenError: "Activity request requires children"
+  },
+  createActivityRequestInformation: {
+    color: "Color of the request",
+    description: "Description (optional)",
+    name: "Name of the request"
+  },
+  createActivityRequestDate: {
+    header: "Select a day",
+    from: "From",
+    to: "To"
+  },
   createActivityScreen: {
     backNavTitle: "New activity"
   },
@@ -1185,6 +1211,16 @@ const en = {
     end: "END",
     confirm: "OK",
     cancel: "CANCEL"
+  },
+  activityRequestScreen: {
+    volunteers: "Volunteers",
+    children: "Children",
+    color: "Color",
+    deleteDialogTitle: "Are you sure you want to delete this activity?",
+    delete: "Delete",
+    infoHeader: "Activity Request details:",
+    candidateActivities: "Possible activities",
+    confirmationSuccessful: "Activity participation confirmed",
   },
   activityScreen: {
     pdfToaster:
@@ -1272,6 +1308,24 @@ const en = {
     name: "Name of the activity",
     save: "SAVE",
     location: "Location (optional)"
+  },
+  editActivityRequestScreen: {
+    backNavTitle: "Edit Activity Request",
+    color: "Color of the request",
+    description: "Description (optional)",
+    name: "Name of the request",
+    to: "To",
+    from: "From",
+    save: "SAVE",
+  },
+  acceptActivityRequestScreen: {
+    backNavTitle: "Accept Activity Request",
+    color: "Color",
+    description: "Description (optional)",
+    name: "Name of the new activity",
+    location: "Location (optional)",
+    pendingMessage: "The activity is pending confirmation from an admin",
+    createdMessage: "",
   },
   agendaView: {
     timeslots: "Timeslots",

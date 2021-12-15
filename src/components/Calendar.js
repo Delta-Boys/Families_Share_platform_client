@@ -36,6 +36,18 @@ const getUserEvents = userId => {
     });
 };
 
+const getGroupActivityRequests = groupId => {
+  return axios
+    .get(`/api/groups/${groupId}/activityrequests`)
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      Log.error(error);
+      return [];
+    });
+};
+
 const MyAgenda = ({ events: ev, date }) => {
   const getCurrentMonthEvents = () => {
     const events = JSON.parse(JSON.stringify(ev));
@@ -79,15 +91,29 @@ const DayHeader = () => {
 };
 
 const MyMonthEvent = ({ event, history }) => {
-  const { activityId } = event.extendedProperties.shared;
-  const timeslotId = event.id;
-  const { groupId } = event.extendedProperties.shared;
-  const pathname = `/groups/${groupId}/activities/${activityId}/timeslots/${timeslotId}`;
-  return (
-    <div role="button" tabIndex={-42} onClick={() => history.push(pathname)}>
-      {event.title}
-    </div>
-  );
+  switch (event.type) {
+    default:
+    case 'activity': {
+      const { activityId } = event.extendedProperties.shared;
+      const timeslotId = event.id;
+      const { groupId } = event.extendedProperties.shared;
+      const pathname = `/groups/${groupId}/activities/${activityId}/timeslots/${timeslotId}`;
+      return (
+        <div role="button" tabIndex={-42} onClick={() => history.push(pathname)}>
+          {event.title}
+        </div>
+      );
+    }
+    case 'request': {
+      const { group_id, _id } = event;
+      const pathname = `/groups/${group_id}/activityRequests/${_id}`;
+      return (
+        <div role="button" tabIndex={-42} onClick={() => history.push(pathname)}>
+          {event.title}
+        </div>
+      );
+    }
+  }
 };
 
 const DateCell = ({ children }) => {
@@ -249,7 +275,7 @@ const CustomToolbar = (
 };
 
 class Calendar extends React.Component {
-  state = { events: [], swipe: "none", filter: "all", filteredEvents: [] };
+  state = { events: [], swipe: "none", filter: "all", filteredEvents: [], activityRequests: [] };
 
   async componentDidMount() {
     const { ownerType, ownerId } = this.props;
@@ -261,13 +287,14 @@ class Calendar extends React.Component {
           event.title = event.summary;
           event.start = new Date(event.start.dateTime);
           event.end = new Date(event.end.dateTime);
+          event.type = 'activity';
         });
         const filteredUserEvents =
           filter === "all"
             ? userEvents
             : userEvents.filter(
-                event => event.extendedProperties.shared === "ongoing"
-              );
+              event => event.extendedProperties.shared === "ongoing"
+            );
         this.setState({
           events: userEvents,
           filteredEvents: filteredUserEvents
@@ -279,16 +306,29 @@ class Calendar extends React.Component {
           event.title = event.summary;
           event.start = new Date(event.start.dateTime);
           event.end = new Date(event.end.dateTime);
+          event.type = 'activity';
+        });
+        const groupActivityRequests = await getGroupActivityRequests(ownerId)
+        groupActivityRequests.forEach(req => {
+          req.title = req.name;
+          req.start = new Date(req.date);
+          req.start.setHours(req.startTime.substr(0, 2));
+          req.start.setMinutes(req.startTime.substr(3, 2))
+          req.end = new Date(req.date);
+          req.end.setHours(req.endTime.substr(0, 2));
+          req.end.setMinutes(req.endTime.substr(3, 2))
+          req.type = 'request';
         });
         const filteredGroupEvents =
           filter === "all"
             ? groupEvents
             : groupEvents.filter(
-                event => event.extendedProperties.shared === "ongoing"
-              );
+              event => event.extendedProperties.shared === "ongoing"
+            );
         this.setState({
           events: groupEvents,
-          filteredEvents: filteredGroupEvents
+          filteredEvents: filteredGroupEvents,
+          activityRequests: groupActivityRequests
         });
         break;
       default:
@@ -298,12 +338,24 @@ class Calendar extends React.Component {
   }
 
   eventStyleGetter = event => {
-    const style = {
-      backgroundColor: event.extendedProperties.shared.activityColor
-    };
-    return {
-      style
-    };
+    switch (event.type) {
+      default:
+      case 'activity':
+        return {
+          style: {
+            backgroundColor: event.extendedProperties.shared.activityColor,
+            border: '1px solid',
+          }
+        };
+      case 'request':
+        return {
+          style: {
+            backgroundColor: "#FFFFFF",
+            color: event.color,
+            border: '1px solid',
+          }
+        };
+    }
   };
 
   dayStyleGetter = () => {
@@ -324,9 +376,9 @@ class Calendar extends React.Component {
         if (
           createdYear <= currentYear &&
           createdMonth <=
-            moment()
-              .month(currentMonth)
-              .format("M")
+          moment()
+            .month(currentMonth)
+            .format("M")
         ) {
           event.start = moment(event.start)
             .month(currentMonth)
@@ -362,14 +414,14 @@ class Calendar extends React.Component {
       filter === "all"
         ? events
         : events.filter(
-            event => event.extendedProperties.shared.status === "ongoing"
-          );
+          event => event.extendedProperties.shared.status === "ongoing"
+        );
     this.setState({ filter, filteredEvents });
   };
 
   render() {
     const { language, ownerType } = this.props;
-    const { swipe, activeView, filteredEvents, filter } = this.state;
+    const { swipe, activeView, filteredEvents, filter, activityRequests } = this.state;
     const texts = Texts[language].calendar;
     const calendarTitle =
       ownerType === "user" ? texts.userCalendar : texts.groupCalendar;
@@ -406,7 +458,7 @@ class Calendar extends React.Component {
             popup
             style={{ minHeight: "40rem" }}
             localizer={localizer}
-            events={filteredEvents}
+            events={filteredEvents.concat(activityRequests)}
             views={{ month: true, agenda: MyAgenda, day: true }}
             defaultView={BigCalendar.Views.MONTH}
             startAccessor="start"

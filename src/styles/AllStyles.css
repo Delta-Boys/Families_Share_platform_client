@@ -286,6 +286,35 @@
 }
 /*ACTIVITY SCREEN END*/
 
+/*ACTIVITY REQUEST SCREEN*/
+#activityRequestMainContainer {
+  margin-top: 5.6rem;
+  padding: 5%;
+}
+#activityRequestMainContainer i {
+  color: rgba(0, 0, 0, 0.87);
+}
+#activityRequestMainContainer .row {
+  padding: 0 5%;
+  align-items: center;
+}
+/* #activityRequestMainContainer .timeslotPreview {
+  max-width: none;
+} */
+.acceptButton {
+  cursor: pointer;
+  margin: 1rem;
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: #00838f;
+  color: #ffffff;
+  font-size: 3rem;
+  text-align: center;
+  line-height: 3.6rem;
+  border: none;
+}
+/*ACTIVITY REQUEST SCREEN END*/
+
 /*ADDITIONAL INFO SCREEN*/
 #additionalInfoScreenHeaderContainer {
   height: 6rem;
