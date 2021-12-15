@@ -105,7 +105,8 @@ class AcceptActivityRequestScreen extends React.Component {
       location,
       repetition: false,
       repetitionType: "",
-      different_timeslots: false
+      different_timeslots: false,
+      greenpass_required: false,
     };
   };
 
