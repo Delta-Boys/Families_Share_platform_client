@@ -38,10 +38,10 @@ const styles = {
 const getActivityTimeslots = (activityId, groupId) => {
   return axios
     .get(`/api/groups/${groupId}/activities/${activityId}/timeslots`)
-    .then(response => {
+    .then((response) => {
       return response.data;
     })
-    .catch(error => {
+    .catch((error) => {
       Log.error(error);
       return [];
     });
@@ -50,10 +50,10 @@ const getActivityTimeslots = (activityId, groupId) => {
 const getActivity = (activityId, groupId) => {
   return axios
     .get(`/api/groups/${groupId}/activities/${activityId}`)
-    .then(response => {
+    .then((response) => {
       return response.data;
     })
-    .catch(error => {
+    .catch((error) => {
       Log.error(error);
       return {
         name: "",
@@ -62,23 +62,24 @@ const getActivity = (activityId, groupId) => {
         group_name: "",
         location: "",
         dates: [],
-        repetition_type: ""
+        repetition_type: "",
+        greenpass_required: true
       };
     });
 };
-const getGroupMembers = groupId => {
+const getGroupMembers = (groupId) => {
   return axios
     .get(`/api/groups/${groupId}/members`)
-    .then(response => {
+    .then((response) => {
       return response.data;
     })
-    .catch(error => {
+    .catch((error) => {
       Log.error(error);
       return [];
     });
 };
 
-const getActivityChildren = ids => {
+const getActivityChildren = (ids) => {
   return axios
     .get("/api/children", {
       params: {
@@ -86,16 +87,16 @@ const getActivityChildren = ids => {
         searchBy: "ids"
       }
     })
-    .then(response => {
+    .then((response) => {
       return response.data;
     })
-    .catch(error => {
+    .catch((error) => {
       Log.error(error);
       return [];
     });
 };
 
-const getActivityParents = ids => {
+const getActivityParents = (ids) => {
   return axios
     .get("/api/profiles", {
       params: {
@@ -103,10 +104,10 @@ const getActivityParents = ids => {
         searchBy: "ids"
       }
     })
-    .then(response => {
+    .then((response) => {
       return response.data;
     })
-    .catch(error => {
+    .catch((error) => {
       Log.error(error);
       return [];
     });
@@ -139,7 +140,7 @@ class ActivityScreen extends React.Component {
     activity.timeslots = await getActivityTimeslots(activityId, groupId);
     let childIds = [];
     let parentIds = [];
-    activity.timeslots.forEach(timeslot => {
+    activity.timeslots.forEach((timeslot) => {
       const childParticipants = JSON.parse(
         timeslot.extendedProperties.shared.children
       );
@@ -161,13 +162,13 @@ class ActivityScreen extends React.Component {
       (a, b) =>
         `${a.given_name} ${a.family_name}` - `${b.given_name} ${b.family_name}`
     );
-    let dates = activity.timeslots.map(timeslot => timeslot.start.dateTime);
+    let dates = activity.timeslots.map((timeslot) => timeslot.start.dateTime);
     dates = dates.sort((a, b) => {
       return new Date(a) - new Date(b);
     });
     const uniqueDates = [];
     const temp = [];
-    dates.forEach(date => {
+    dates.forEach((date) => {
       const t = moment(date).format("DD-MM-YYYY");
       if (!temp.includes(t)) {
         temp.push(t);
@@ -177,7 +178,7 @@ class ActivityScreen extends React.Component {
     activity.dates = uniqueDates;
     const groupMembers = await getGroupMembers(groupId);
     const userIsAdmin = groupMembers.filter(
-      member =>
+      (member) =>
         member.user_id === userId &&
         member.group_accepted &&
         member.user_accepted
@@ -224,7 +225,7 @@ class ActivityScreen extends React.Component {
     ));
   };
 
-  renderParticipants = type => {
+  renderParticipants = (type) => {
     const {
       activity: { children, parents },
       showVolunteers,
@@ -309,13 +310,23 @@ class ActivityScreen extends React.Component {
         "dddd"
       )} ${texts.of} ${moment(selectedDates[0]).format("MMMM")}`;
     } else {
-      selectedDates.forEach(selectedDate => {
+      selectedDates.forEach((selectedDate) => {
         datesString += `${moment(selectedDate).format("D")}, `;
       });
       datesString = datesString.slice(0, datesString.lastIndexOf(","));
       datesString += ` ${moment(selectedDates[0]).format("MMMM YYYY")}`;
     }
     return datesString;
+  };
+
+  getGreenPassRequired = () => {
+    const { language } = this.props;
+    const texts = Texts[language].activityScreen;
+    if (this.state.activity.greenpass_required) {
+      return texts.greenPassRequired;
+    } else {
+      return texts.greenPassNotRequired;
+    }
   };
 
   handleEdit = () => {
@@ -325,7 +336,7 @@ class ActivityScreen extends React.Component {
     history.push(pathname);
   };
 
-  handleConfirmDialogOpen = action => {
+  handleConfirmDialogOpen = (action) => {
     this.setState({
       confirmDialogIsOpen: true,
       optionsModalIsOpen: false,
@@ -333,7 +344,7 @@ class ActivityScreen extends React.Component {
     });
   };
 
-  handleConfirmDialogClose = choice => {
+  handleConfirmDialogClose = (choice) => {
     const { action } = this.state;
     if (choice === "agree") {
       switch (action) {
@@ -364,20 +375,20 @@ class ActivityScreen extends React.Component {
   handleDelete = () => {
     const { match, history } = this.props;
     const { groupId, activityId } = match.params;
-    this.setState({pendingRequest: true})
+    this.setState({ pendingRequest: true });
     axios
       .delete(`/api/groups/${groupId}/activities/${activityId}`)
-      .then(response => {
+      .then((response) => {
         Log.info(response);
         history.goBack();
       })
-      .catch(error => {
+      .catch((error) => {
         Log.error(error);
         history.goBack();
       });
   };
 
-  handleExport = format => {
+  handleExport = (format) => {
     const { match, enqueueSnackbar, language } = this.props;
     const texts = Texts[language].activityScreen;
     const snackMessage = texts[`${format}Toaster`];
@@ -386,13 +397,13 @@ class ActivityScreen extends React.Component {
       .post(`/api/groups/${groupId}/activities/${activityId}/export`, {
         format
       })
-      .then(response => {
+      .then((response) => {
         enqueueSnackbar(snackMessage, {
           variant: "info"
         });
         Log.info(response);
       })
-      .catch(error => {
+      .catch((error) => {
         Log.error(error);
       });
   };
@@ -437,7 +448,7 @@ class ActivityScreen extends React.Component {
     const rowStyle = { minHeight: "5rem" };
     return fetchedActivityData ? (
       <React.Fragment>
-        {pendingRequest && <LoadingSpinner/>}
+        {pendingRequest && <LoadingSpinner />}
         <div id="activityContainer">
           <ConfirmDialog
             title={confirmDialogTitle}
@@ -531,6 +542,18 @@ class ActivityScreen extends React.Component {
                 </div>
               </div>
             </div>
+
+            <div className="row no-gutters" style={rowStyle}>
+              <div className="col-1-10">
+                <i className="fas fa-biohazard" />
+              </div>
+              <div className="col-9-10">
+                <div className="activityInfoDescription">
+                  {this.getGreenPassRequired()}
+                </div>
+              </div>
+            </div>
+
             {this.renderParticipants("volunteers")}
             {this.renderParticipants("children")}
           </div>

@@ -10,7 +10,7 @@ import Log from "./Log";
 
 class EditActivityScreen extends React.Component {
   state = {
-    fetchedActivity: false
+    fetchedActivity: false,
   };
 
   componentDidMount() {
@@ -19,13 +19,14 @@ class EditActivityScreen extends React.Component {
     axios
       .get(`/api/groups/${groupId}/activities/${activityId}`)
       .then(response => {
-        const { name, description, color, location } = response.data;
+        const { name, description, color, location, greenpass_required } = response.data;
         this.setState({
           fetchedActivity: true,
           name,
           color,
           description,
           location,
+          greenpass_required,
           validated: true
         });
       })
@@ -36,6 +37,7 @@ class EditActivityScreen extends React.Component {
           name: "",
           color: "",
           description: "",
+          greenpass_required: false,
           validated: false
         });
       });
@@ -59,17 +61,24 @@ class EditActivityScreen extends React.Component {
     this.setState(state);
   };
 
+  handleGreenPassCheck = (e) => {
+    // let {greenpass_required} = this.state;
+    // greenpass_required = !greenpass_required;
+    this.setState({greenpass_required: e.target.checked});
+  }
+
   handleSave = () => {
     const { match, history } = this.props;
     const { activityId, groupId } = match.params;
-    const { validated, name, color, location, description } = this.state;
+    const { validated, name, color, location, description,greenpass_required } = this.state;
     if (validated) {
       this.setState({ fetchedActivity: false });
       const patch = {
         name,
         color,
         location: location.trim(),
-        description: description.trim()
+        description: description.trim(),
+        greenpass_required
       };
       axios
         .patch(`/api/groups/${groupId}/activities/${activityId}`, patch)
@@ -91,6 +100,7 @@ class EditActivityScreen extends React.Component {
       name,
       description,
       location,
+      greenpass_required,
       color
     } = this.state;
     const { language, history } = this.props;
@@ -173,6 +183,28 @@ class EditActivityScreen extends React.Component {
               />
             </div>
           </div>
+
+          <div
+            className="row no-gutters"
+            style={{ height: "auto", minHeight: "6rem" }}
+          >
+            <div className="col-2-10">
+              <i className="fas fa-biohazard center" />
+            </div>
+            <div className="col-6-10">
+              <h1 className="verticalCenter">{texts.greenPassRequiredYes}</h1>
+            </div>
+            <div className="col-1-10">
+              <input
+                type="checkbox"
+                className="verticalCenter"
+                onChange={this.handleGreenPassCheck}
+                checked={greenpass_required}
+              />
+            </div>
+          </div>
+
+
           <div className="row no-gutters">
             <div className="col-2-10">
               <i

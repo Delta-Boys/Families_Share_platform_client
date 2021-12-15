@@ -1191,7 +1191,8 @@ const en = {
     color: "Color of the activity",
     description: "Description (optional)",
     name: "Name of the activity",
-    location: "Location (optional)"
+    location: "Location (optional)",
+    greenPassRequiredYes: "Green pass required",
   },
   createActivityDates: {
     header: "Select one or more days",
@@ -1249,7 +1250,9 @@ const en = {
     exportExcel: "Export Excel",
     every: "Every",
     of: "of",
-    infoHeader: "Activity Info:"
+    infoHeader: "Activity Info:",
+    greenPassRequired: "A valid green pass is required",
+    greenPassNotRequired: "No valid green pass is required"
   },
   timeslotsList: {
     fixed: "fixed",
@@ -1316,7 +1319,8 @@ const en = {
     description: "Description (optional)",
     name: "Name of the activity",
     save: "SAVE",
-    location: "Location (optional)"
+    location: "Location (optional)",
+    greenPassRequiredYes: "Green pass required",
   },
   editActivityRequestScreen: {
     backNavTitle: "Edit Activity Request",
@@ -3796,7 +3800,8 @@ const it = {
     color: "Colore dell'attività",
     description: "Descrizione (facoltativo)",
     name: "Titolo dell'attività",
-    location: "Posizione (facoltativo)"
+    location: "Posizione (facoltativo)",
+    greenPassRequiredYes: "Green pass richiesto",
   },
   createActivityDates: {
     header: "Seleziona uno o più giorni",
@@ -3842,7 +3847,9 @@ const it = {
     every: "Ogni",
     of: "di",
     deleteDialogTitle: "Confermi di eliminare questa attività?",
-    infoHeader: "Informazioni"
+    infoHeader: "Informazioni",
+    greenPassRequired: "Un green pass valido è richiesto",
+    greenPassNotRequired: "Non è necessario essere in possesso di un green pass"
   },
   timeslotsList: {
     fixed: "fisso",
@@ -3910,7 +3917,8 @@ const it = {
     description: "Descrizione (facoltativo)",
     name: "Nome dell'attività",
     save: "SALVA",
-    location: "Posizione (facoltativo)"
+    location: "Posizione (facoltativo)",
+    greenPassRequiredYes: "Green pass richiesto"
   },
   agendaView: {
     timeslots: "Orari",
