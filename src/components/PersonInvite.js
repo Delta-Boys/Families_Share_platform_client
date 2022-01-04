@@ -42,6 +42,7 @@ class PersonInvite extends React.Component {
             >
               <h1>{`${profile.given_name} ${profile.family_name}`}</h1>
               <h2>{profile.admin ? texts.administrator : ""}</h2>
+              {profile.status_relevant ? (<h2>Status: <b>{profile.status_text}</b></h2>) : ""}    
             </div>
           </div>
           <div id="contactIconsContainer" className="col-2-10">

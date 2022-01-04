@@ -68,6 +68,8 @@ class TimeslotInviteScreen extends React.Component {
             .map(child => child.child_id))
       ])
 
+      const timeslot = await timeslotPromise;
+
       const profilesPromise = Promise.all([
 
         axios
@@ -76,13 +78,16 @@ class TimeslotInviteScreen extends React.Component {
           })
           .then(response => {
             return response.data.map(parent => {
+              const status_relevant = parent.status_expiration === undefined || parent.status_expiration >= timeslot.start.dateTime;
               return {
                 user_id: parent.user_id,
                 image: path(parent, ["image", "path"]),
                 name: `${parent.given_name} ${parent.family_name}`,
                 given_name: parent.given_name,
                 family_name: parent.family_name,
-                type: 'parent'
+                type: 'parent',
+                status_text: parent.status_text,
+                status_relevant,
               };
             }).filter(parent =>
               parent.user_id !== userId
@@ -112,7 +117,7 @@ class TimeslotInviteScreen extends React.Component {
 
       this.setState({
         fetchedData: true,
-        timeslot: await timeslotPromise,
+        timeslot,
         profiles: await profilesPromise
       });
 
