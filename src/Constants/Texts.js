@@ -998,7 +998,12 @@ const en = {
     email: "Personal",
     mobile: "Mobile",
     home: "Home",
-    unspecified: "Unspecified"
+    unspecified: "Unspecified",
+    status: "Status",
+    possibleStatus_available: "Available",
+    possibleStatus_work: "At work",
+    possibleStatus_vacation: "On vacation",
+    possibleStatus_other: "Insert personalized status"
   },
   profileScreen: {
     privateProfile: "Profile is private"
@@ -1025,7 +1030,16 @@ const en = {
     visible: "Visible profile",
     invisible: "Invisible Profile",
     cityErr: "City doesn't exist",
-    requiredErr: "Please fill out this field."
+    requiredErr: "Please fill out this field.",
+    status: "Status",
+    possibleStatus_available: "Available",
+    possibleStatus_work: "At work",
+    possibleStatus_vacation: "On vacation",
+    possibleStatus_other: "Insert personalized status",
+    minutes: "minutes",
+    hours: "hours",
+    days: "days",
+    insertValue: "Insert value"
   },
   editGroupScreen: {
     phone: "Phone",
@@ -3630,7 +3644,12 @@ const it = {
     email: "Contatto personale ",
     mobile: "Cellulare",
     home: "Telefono",
-    unspecified: "Non specificato"
+    unspecified: "Non specificato",
+    status: "Stato",
+    possibleStatus_available: "Disponibile",
+    possibleStatus_work: "Al lavoro",
+    possibleStatus_vacation: "In vacanza",
+    possibleStatus_other: "Inserisci stato personalizzato"
   },
   profileScreen: {
     privateProfile: "Il profilo è privato"
@@ -3657,7 +3676,16 @@ const it = {
     visible: "Profilo visibile",
     invisible: "Profilo non visibile",
     cityError: "Città non presente",
-    requiredErr: "Perfavore compila questo campo."
+    requiredErr: "Perfavore compila questo campo.",
+    status: "Stato",
+    possibleStatus_available: "Disponibile",
+    possibleStatus_work: "Al lavoro",
+    possibleStatus_vacation: "In vacanza",
+    possibleStatus_other: "Inserisci stato personalizzato",
+    minutes: "minuti",
+    hours: "ore",
+    days: "giorni",
+    insertValue: "Inserisci valore"
   },
   editGroupScreen: {
     email: "E-mail",
