@@ -78,7 +78,7 @@ class TimeslotInviteScreen extends React.Component {
           })
           .then(response => {
             return response.data.map(parent => {
-              const status_relevant = parent.status_expiration === undefined || parent.status_expiration >= timeslot.start.dateTime;
+              const status_relevant = !parent.status_expiration || parent.status_expiration >= timeslot.start.dateTime;
               return {
                 user_id: parent.user_id,
                 image: path(parent, ["image", "path"]),

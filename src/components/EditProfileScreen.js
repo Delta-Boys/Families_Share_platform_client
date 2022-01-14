@@ -147,21 +147,29 @@ class EditProfileScreen extends React.Component {
       status_text === "other" ? custom_status : status_text
     );
     let status_expiration = new Date();
-    switch(status_expiration_scale){
-      case "minutes": 
-        status_expiration.setMinutes(status_expiration.getMinutes() + parseInt(status_expiration_amount));
+    switch (status_expiration_scale) {
+      case "minutes":
+        status_expiration.setMinutes(
+          status_expiration.getMinutes() + parseInt(status_expiration_amount)
+        );
         break;
-      case "hours": 
-        status_expiration.setHours(status_expiration.getHours() + parseInt(status_expiration_amount));
+      case "hours":
+        status_expiration.setHours(
+          status_expiration.getHours() + parseInt(status_expiration_amount)
+        );
         break;
-      case "days": 
-        status_expiration.setDate(status_expiration.getDate() + parseInt(status_expiration_amount));
+      case "days":
+        status_expiration.setDate(
+          status_expiration.getDate() + parseInt(status_expiration_amount)
+        );
         break;
       default:
     }
     bodyFormData.append(
       "status_expiration",
-      status_expiration_set && status_text !== "available" ? status_expiration : null
+      status_expiration_set && status_text !== "available"
+        ? status_expiration
+        : null
     );
     axios
       .patch(`/api/users/${userId}/profile`, bodyFormData, {
@@ -229,7 +237,11 @@ class EditProfileScreen extends React.Component {
 
   handleStatus = (event) => {
     const { value } = event.target;
-    this.setState({ status_text: value, custom_status: "", status_expiration_set: false });
+    this.setState({
+      status_text: value,
+      custom_status: "",
+      status_expiration_set: false,
+    });
   };
 
   handleStatusCheckbox = (event) => {
@@ -534,49 +546,49 @@ class EditProfileScreen extends React.Component {
             </div>
           )}
           {status_text !== "available" && (
-          <div className="row no-gutters">
-          <div className="col-2-10">
-              <i className="fas fa-hourglass-half center" />
+            <div className="row no-gutters">
+              <div className="col-2-10">
+                <i className="fas fa-hourglass-half center" />
+              </div>
+              <div className="col-2-5" />
+              <div className="col-1-10">
+                <input
+                  type="checkbox"
+                  id="status_expiration_set"
+                  name="status_expiration_set"
+                  className="form-control center"
+                  checked={status_expiration_set}
+                  onChange={this.handleStatusCheckbox}
+                />
+              </div>
+              <div className="col-4-10">
+                <input
+                  type="number"
+                  placeholder={texts.insertValue}
+                  name="status_expiration_amount"
+                  className="editProfileInputField form-control"
+                  onChange={this.handleChange}
+                  value={status_expiration_amount}
+                  disabled={!status_expiration_set}
+                  min="0"
+                  required
+                />
+              </div>
+              <div className="col-3-10">
+                <select
+                  value={status_expiration_scale}
+                  onChange={this.handleChange}
+                  className="editProfileInputField form-control"
+                  name="status_expiration_scale"
+                  disabled={!status_expiration_set}
+                  required
+                >
+                  <option value="minutes">{texts.minutes}</option>
+                  <option value="hours">{texts.hours}</option>
+                  <option value="days">{texts.days}</option>
+                </select>
+              </div>
             </div>
-            <div className="col-2-5" />
-            <div className="col-1-10">
-              <input
-                type="checkbox"
-                id="status_expiration_set"
-                name="status_expiration_set"
-                className="form-control center"
-                checked={status_expiration_set}
-                onChange={this.handleStatusCheckbox}
-              />
-            </div>
-            <div className="col-4-10">
-              <input
-                type="number"
-                placeholder={texts.insertValue}
-                name="status_expiration_amount"
-                className="editProfileInputField form-control"
-                onChange={this.handleChange}
-                value={parseInt(status_expiration_amount) || "0"}
-                disabled={!status_expiration_set}
-                min="0"
-                required
-              />
-            </div>
-            <div className="col-3-10">
-              <select
-                value={status_expiration_scale}
-                onChange={this.handleChange}
-                className="editProfileInputField form-control"
-                name="status_expiration_scale"
-                disabled={!status_expiration_set}
-                required
-              >
-                <option value="minutes">{texts.minutes}</option>
-                <option value="hours">{texts.hours}</option>
-                <option value="days">{texts.days}</option>
-              </select>
-            </div>
-          </div>
           )}
           <div style={bottomBorder}></div>
         </div>
