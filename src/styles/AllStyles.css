@@ -1405,19 +1405,25 @@
 #editProfileInfoContainer {
   margin-bottom: 2rem;
 }
+#editProfileInfoContainer .col-1-10 {
+  padding: 1rem;
+}
+#editProfileInfoContainer .col-2-10 {
+  padding: 1rem;
+}
+#editProfileInfoContainer .col-3-10 {
+  padding: 1rem;
+}
+#editProfileInfoContainer .col-4-10 {
+  padding: 1rem;
+}
 #editProfileInfoContainer .col-5-10 {
   padding: 1rem;
 }
 #editProfileInfoContainer .col-6-10 {
   padding: 1rem;
 }
-#editProfileInfoContainer .col-3-10 {
-  padding: 1rem;
-}
 #editProfileInfoContainer .col-8-10 {
-  padding: 1rem;
-}
-#editProfileInfoContainer .col-2-10 {
   padding: 1rem;
 }
 #editProfileInfoContainer span {
@@ -1427,6 +1433,9 @@
   position: absolute;
   bottom: 2%;
   left: 5%;
+}
+.editProfileInputField:disabled {
+  opacity: 60%;
 }
 
 /*EDIT PROFILE SCREEN END*/

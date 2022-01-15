@@ -4,8 +4,25 @@ import * as path from "lodash.get";
 import withLanguage from "./LanguageContext";
 import Texts from "../Constants/Texts";
 
+
+
 const ProfileInfo = ({ language, profile }) => {
   const texts = Texts[language].profileInfo;
+
+  const getStatus = () => {
+    switch (profile.status_text) {
+      case "available": 
+        return texts.possibleStatus_available;
+      case "work":
+        return texts.possibleStatus_work;
+      case "vacation":
+        return texts.possibleStatus_vacation;
+      default: 
+        return profile.status_text;
+    }
+  };
+  
+
   return (
     <div>
       <div className="row no-gutters profileInfoContainer">
@@ -56,7 +73,20 @@ const ProfileInfo = ({ language, profile }) => {
             <h2>{texts.description}</h2>
           </div>
         </div>
+      </div>   
+      
+      <div className="row no-gutters  profileInfoContainer">
+        <div className="col-2-10">
+          <i className="fas fa-map-pin center" />
+        </div>
+        <div className="col-8-10">
+          <div className="verticalCenter">
+            <h1>{ getStatus() }</h1>
+            <h2>{texts.status}</h2>
+          </div>
+        </div>
       </div>
+
     </div>
   );
 };
