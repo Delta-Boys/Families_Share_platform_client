@@ -12,15 +12,17 @@ import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import StepContent from "@material-ui/core/StepContent";
 import Button from "@material-ui/core/Button";
-import moment from "moment";
 import axios from "axios";
-import withLanguage from "./LanguageContext";
-import CreateActivityInformation from "./CreateActivityInformation";
-import CreateActivityDates from "./CreateActivityDates";
-import CreateActivityTimeslots from "./CreateActivityTimeslots";
+import * as path from "lodash.get";
+
 import Texts from "../Constants/Texts";
 import Log from "./Log";
+import withLanguage from "./LanguageContext";
 import LoadingSpinner from "./LoadingSpinner";
+
+import CreateActivityRequestChildren from "./CreateActivityRequestChildren";
+import CreateActivityRequestInformation from "./CreateActivityRequestInformation";
+import CreateActivityRequestDate from "./CreateActivityRequestDate";
 
 const muiTheme = createMuiTheme({
   typography: {
@@ -114,7 +116,42 @@ const styles = theme => ({
   }
 });
 
-class CreateActivityStepper extends React.Component {
+const getUsersChildren = userId => {
+  return axios
+    .get(`/api/users/${userId}/children`)
+    .then(response => {
+      return response.data.map(child => child.child_id);
+    })
+    .catch(error => {
+      Log.error(error);
+      return [];
+    });
+};
+
+const getChildrenProfiles = ids => {
+  return axios
+    .get("/api/children", {
+      params: {
+        ids
+      }
+    })
+    .then(response => {
+      return response.data.map(child => {
+        return {
+          child_id: child.child_id,
+          image: path(child, ["image", "path"]),
+          name: `${child.given_name} ${child.family_name}`,
+          given_name: child.given_name
+        };
+      });
+    })
+    .catch(error => {
+      Log.error(error);
+      return [];
+    });
+};
+
+class CreateActivityRequestStepper extends React.Component {
   constructor(props) {
     super(props);
     const colors = [
@@ -139,22 +176,19 @@ class CreateActivityStepper extends React.Component {
     ];
     this.state = {
       activeStep: 0,
+      usersChildren: [],
+      children: {
+        selectedChildren: []
+      },
       information: {
         name: "",
         color: colors[Math.floor(Math.random() * colors.length)],
-        description: "",
-        location: "",
-        link: ""
+        description: ""
       },
       dates: {
-        selectedDays: [],
-        repetition: false,
-        repetitionType: "",
-        lastSelect: new Date()
-      },
-      timeslots: {
-        activityTimeslots: [],
-        differentTimeslots: false
+        selectedDay: null,
+        startTime: "00:00",
+        endTime: "00:00"
       },
       stepWasValidated: false,
       creating: false
@@ -163,6 +197,14 @@ class CreateActivityStepper extends React.Component {
 
   componentDidMount() {
     document.addEventListener("message", this.handleMessage, false);
+
+    const userId = JSON.parse(localStorage.getItem("user")).id;
+    getUsersChildren(userId)
+      .then(getChildrenProfiles)
+      .then(usersChildren => {
+        this.setState({ usersChildren });
+      });
+
   }
 
   componentWillUnmount() {
@@ -182,34 +224,34 @@ class CreateActivityStepper extends React.Component {
     }
   };
 
-  createActivity = () => {
-    const { match, history, enqueueSnackbar, language } = this.props;
-    const texts = Texts[language].createActivityStepper;
+  formatDataToActivityRequest(children, information, dates, groupId, userId) {
+    return {
+      group_id: groupId,
+      creator_id: userId,
+      name: information.name,
+      description: information.description,
+      color: information.color,
+      children: children.selectedChildren,
+      date: dates.selectedDay,
+      startTime: dates.startTime,
+      endTime: dates.endTime
+    };
+  }
+
+  createActivityRequest() {
+
+    const { match, history } = this.props;
     const { groupId } = match.params;
-    const { information, dates, timeslots } = this.state;
+    const { children, information, dates } = this.state;
     const userId = JSON.parse(localStorage.getItem("user")).id;
-    const activity = this.formatDataToActivity(
-      information,
-      dates,
-      timeslots,
-      groupId,
-      userId
-    );
-    const events = this.formatDataToEvents(
-      information,
-      dates,
-      timeslots,
-      groupId
-    );
+
+    const activityReq = this.formatDataToActivityRequest(children, information, dates, groupId, userId);
+
     this.setState({ creating: true });
+
     axios
-      .post(`/api/groups/${groupId}/activities`, { activity, events })
+      .post(`/api/groups/${groupId}/activityrequests`, { activityReq })
       .then(response => {
-        if (response.data.status === "pending") {
-          enqueueSnackbar(texts.pendingMessage, {
-            variant: "info"
-          });
-        }
         Log.info(response);
         history.goBack();
       })
@@ -217,85 +259,12 @@ class CreateActivityStepper extends React.Component {
         Log.error(error);
         history.goBack();
       });
-  };
-
-  formatDataToActivity = (information, dates, timeslots, groupId, userId) => {
-    return {
-      group_id: groupId,
-      creator_id: userId,
-      name: information.name,
-      color: information.color,
-      description: information.description,
-      location: information.location,
-      repetition: dates.repetition,
-      repetition_type: dates.repetitionType,
-      different_timeslots: timeslots.differentTimeslots,
-      greenpass_required: information.greenPassRequired
-    };
-  };
-
-  formatDataToEvents = (information, dates, timeslots, groupId) => {
-    const events = [];
-    dates.selectedDays.forEach((date, index) => {
-      timeslots.activityTimeslots[index].forEach(timeslot => {
-        const dstart = new Date(date);
-        const dend = new Date(date);
-        const { startTime, endTime } = timeslot;
-        dstart.setHours(startTime.substr(0, startTime.indexOf(":")));
-        dstart.setMinutes(
-          startTime.substr(startTime.indexOf(":") + 1, startTime.length - 1)
-        );
-        dend.setHours(endTime.substr(0, endTime.indexOf(":")));
-        dend.setMinutes(
-          endTime.substr(endTime.indexOf(":") + 1, endTime.length - 1)
-        );
-        if (
-          startTime.substr(0, startTime.indexOf(":")) >
-          endTime.substr(0, endTime.indexOf(":"))
-        ) {
-          dend.setDate(dend.getDate() + 1);
-        }
-        const event = {
-          description: timeslot.description,
-          location: timeslot.location,
-          summary: timeslot.name,
-          start: {
-            dateTime: dstart,
-            date: null
-          },
-          end: {
-            dateTime: dend,
-            date: null
-          },
-          extendedProperties: {
-            shared: {
-              requiredParents: timeslot.requiredParents,
-              requiredChildren: timeslot.requiredChildren,
-              cost: timeslot.cost,
-              parents: JSON.stringify([]),
-              children: JSON.stringify([]),
-              externals: JSON.stringify([]),
-              status: "ongoing",
-              link: timeslot.link,
-              activityColor: information.color,
-              category: timeslot.category,
-              groupId,
-              repetition: dates.repetition ? dates.repetitionType : "none",
-              start: startTime.substr(0, startTime.indexOf(":")),
-              end: endTime.substr(0, startTime.indexOf(":"))
-            }
-          }
-        };
-        events.push(event);
-      });
-    });
-    return events;
-  };
+  }
 
   handleContinue = () => {
     const { activeStep } = this.state;
     if (activeStep === 2) {
-      this.createActivity();
+      this.createActivityRequest();
     } else {
       this.setState({
         activeStep: activeStep + 1
@@ -310,6 +279,10 @@ class CreateActivityStepper extends React.Component {
     });
   };
 
+  handleChildrenSubmit = (children, wasValidated) => {
+    this.setState({ children, stepWasValidated: wasValidated });
+  };
+
   handleInformationSubmit = (information, wasValidated) => {
     this.setState({ information, stepWasValidated: wasValidated });
   };
@@ -318,36 +291,29 @@ class CreateActivityStepper extends React.Component {
     this.setState({ dates, stepWasValidated: wasValidated });
   };
 
-  handleTimeslotsSubmit = (timeslots, wasValidated) => {
-    this.setState({ timeslots, stepWasValidated: wasValidated });
-  };
-
   getStepContent = () => {
-    const { activeStep, information, dates, timeslots } = this.state;
+    const { activeStep, usersChildren, children, information, dates } = this.state;
     switch (activeStep) {
       case 0:
         return (
-          <CreateActivityInformation
-            {...information}
-            handleSubmit={this.handleInformationSubmit}
+          <CreateActivityRequestChildren
+            usersChildren={usersChildren}
+            {...children}
+            handleSubmit={this.handleChildrenSubmit}
           />
         );
       case 1:
         return (
-          <CreateActivityDates
-            {...dates}
-            handleSubmit={this.handleDatesSubmit}
+          <CreateActivityRequestInformation
+            {...information}
+            handleSubmit={this.handleInformationSubmit}
           />
         );
       case 2:
         return (
-          <CreateActivityTimeslots
-            activityName={information.name}
-            activityLocation={information.location}
-            activityLink={information.link}
-            dates={dates.selectedDays}
-            {...timeslots}
-            handleSubmit={this.handleTimeslotsSubmit}
+          <CreateActivityRequestDate
+            {...dates}
+            handleSubmit={this.handleDatesSubmit}
           />
         );
       default:
@@ -361,13 +327,13 @@ class CreateActivityStepper extends React.Component {
     let icon = "";
     switch (index) {
       case 0:
-        icon = "fas fa-info-circle";
+        icon = "fas fa-child";
         break;
       case 1:
-        icon = "fas fa-calendar-alt";
+        icon = "fas fa-info-circle";
         break;
       case 2:
-        icon = "fas fa-clock";
+        icon = "fas fa-calendar-alt";
         break;
       default:
         icon = "fas fa-exclamation";
@@ -384,49 +350,9 @@ class CreateActivityStepper extends React.Component {
     );
   };
 
-  getDatesCompletedLabel = label => {
-    const { dates: days } = this.state;
-    const { selectedDays, repetitionType } = days;
-    let completedLabel = "";
-    if (repetitionType === "monthly") {
-      const selectedDay = moment(selectedDays[0]);
-      completedLabel = `Every ${selectedDay.format("Do ")}`;
-    } else {
-      const eachMonthsDates = {};
-      selectedDays.forEach(selectedDay => {
-        const key = moment(selectedDay).format("MMMM YYYY");
-        if (eachMonthsDates[key] === undefined) {
-          eachMonthsDates[key] = [selectedDay];
-        } else {
-          eachMonthsDates[key].push(selectedDay);
-        }
-      });
-      const months = Object.keys(eachMonthsDates);
-      const dates = Object.values(eachMonthsDates);
-      for (let i = 0; i < months.length; i += 1) {
-        let monthString = "";
-        dates[i].forEach(date => {
-          monthString += ` ${moment(date).format("DD")},`;
-        });
-        monthString = monthString.substr(0, monthString.length - 1);
-        monthString += ` ${months[i]}`;
-        completedLabel += ` ${monthString}, `;
-      }
-      completedLabel = completedLabel.substr(0, completedLabel.length - 2);
-    }
-    return (
-      <div style={{ paddingTop: "2 rem" }}>
-        <div className="row-nogutters">{label}</div>
-        <div className="row-nogutters" style={{ opacity: 0.54 }}>
-          {completedLabel}
-        </div>
-      </div>
-    );
-  };
-
   render() {
     const { language, classes } = this.props;
-    const texts = Texts[language].createActivityStepper;
+    const texts = Texts[language].createActivityRequestStepper;
     const steps = texts.stepLabels;
     const { activeStep, stepWasValidated, creating } = this.state;
     return (
@@ -441,11 +367,7 @@ class CreateActivityStepper extends React.Component {
                     icon={this.getStepLabel(label, index)}
                     className={classes.stepLabel}
                   >
-                    {activeStep > index && index === 1 ? (
-                      <div>{this.getDatesCompletedLabel(label)}</div>
-                    ) : (
-                      label
-                    )}
+                    {label}
                   </StepLabel>
                   <StepContent>
                     {this.getStepContent()}
@@ -486,7 +408,7 @@ class CreateActivityStepper extends React.Component {
   }
 }
 
-CreateActivityStepper.propTypes = {
+CreateActivityRequestStepper.propTypes = {
   classes: PropTypes.object,
   match: PropTypes.object,
   history: PropTypes.object,
@@ -494,5 +416,5 @@ CreateActivityStepper.propTypes = {
   enqueueSnackbar: PropTypes.func
 };
 export default withSnackbar(
-  withRouter(withLanguage(withStyles(styles)(CreateActivityStepper)))
+  withRouter(withLanguage(withStyles(styles)(CreateActivityRequestStepper)))
 );

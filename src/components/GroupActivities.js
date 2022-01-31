@@ -6,10 +6,12 @@ import { withStyles } from "@material-ui/core/styles";
 import withLanguage from "./LanguageContext";
 import Texts from "../Constants/Texts";
 import ActivityOptionsModal from "./OptionsModal";
-import ActivityListItem from "./ActivityListItem";
-import PlanListItem from "./PlanListItem";
 import ConfirmDialog from "./ConfirmDialog";
 import Log from "./Log";
+
+import ActivityListItem from "./ActivityListItem";
+import PlanListItem from "./PlanListItem";
+import ActivityRequestListItem from "./ActivityRequestListItem";
 
 const styles = {
   add: {
@@ -35,6 +37,16 @@ const styles = {
     fontSize: "2rem"
   },
   addActivity: {
+    right: "0.5rem",
+    height: "4rem",
+    width: "4rem",
+    borderRadius: "50%",
+    border: "solid 0.5px #999",
+    backgroundColor: "#ff6f00",
+    zIndex: 100,
+    fontSize: "2rem"
+  },
+  addActivityRequest: {
     right: "0.5rem",
     height: "4rem",
     width: "4rem",
@@ -70,6 +82,18 @@ const fetchPlans = groupId => {
     });
 };
 
+const fetchActivityRequests = groupId => {
+  return axios
+    .get(`/api/groups/${groupId}/activityrequests`)
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      Log.error(error);
+      return [];
+    });
+};
+
 class GroupActivities extends React.Component {
   constructor(props) {
     super(props);
@@ -78,7 +102,8 @@ class GroupActivities extends React.Component {
       group,
       showAddOptions: false,
       fetchedData: false,
-      optionsModalIsOpen: false
+      optionsModalIsOpen: false,
+      confirmDialogIsOpen: false,      
     };
   }
 
@@ -87,6 +112,7 @@ class GroupActivities extends React.Component {
     const { group_id: groupId } = group;
     const activities = await fetchActivites(groupId);
     const plans = await fetchPlans(groupId);
+    const activityRequests = await fetchActivityRequests(groupId);
     const acceptedActivities = activities.filter(
       activity => activity.status === "accepted"
     );
@@ -96,7 +122,8 @@ class GroupActivities extends React.Component {
       fetchedData: true,
       activities: acceptedActivities,
       pendingActivities,
-      plans
+      plans,
+      activityRequests
     });
   }
 
@@ -136,6 +163,20 @@ class GroupActivities extends React.Component {
         {plans.map((plan, index) => (
           <li key={index}>
             <PlanListItem plan={plan} groupId={groupId} />
+          </li>
+        ))}
+      </ul>
+    );
+  };
+
+  renderactivityRequests = () => {
+    const { group, activityRequests } = this.state;
+    const { group_id: groupId } = group;
+    return (
+      <ul>
+        {activityRequests.map((req, index) => (
+          <li key={index}>
+            <ActivityRequestListItem activityRequest={req} groupId={groupId} />
           </li>
         ))}
       </ul>
@@ -191,7 +232,8 @@ class GroupActivities extends React.Component {
       pendingActivities,
       showAddOptions,
       fetchedData,
-      plans
+      plans,
+      activityRequests
     } = this.state;
     const { name } = group;
     const texts = Texts[language].groupActivities;
@@ -267,9 +309,7 @@ class GroupActivities extends React.Component {
             color="primary"
             aria-label="Add"
             className={classes.add}
-            onClick={() =>
-              userIsAdmin ? this.toggleAdd() : this.add("activities")
-            }
+            onClick={this.toggleAdd}
           >
             <i className={showAddOptions ? "fas fa-times" : "fas fa-plus"} />
           </Fab>
@@ -306,6 +346,26 @@ class GroupActivities extends React.Component {
                 alignItems: "center"
               }}
             >
+              <div className=" activitiesFabLabel">{texts.newActivityRequest}</div>
+              <Fab
+                color="primary"
+                aria-label="addActivityRequest"
+                className={classes.addActivityRequest}
+                onClick={() => this.add("activityrequests")}
+              >
+                <i className="fas fa-calendar" />
+              </Fab>
+            </div>
+            {userIsAdmin && <div
+              className="row no-gutters"
+              style={{
+                bottom: "26rem",
+                zIndex: 100,
+                position: "fixed",
+                right: "7%",
+                alignItems: "center"
+              }}
+            >
               <div className=" activitiesFabLabel">{texts.newPlan}</div>
               <Fab
                 color="primary"
@@ -315,7 +375,7 @@ class GroupActivities extends React.Component {
               >
                 <i className="fas fa-calendar" />
               </Fab>
-            </div>
+            </div>}
           </React.Fragment>
         )}
         <div style={{ paddingBottom: "6rem" }}>
@@ -329,6 +389,12 @@ class GroupActivities extends React.Component {
             <div id="groupActivitiesContainer" className="horizontalCenter">
               <h1 className="">{texts.plansHeader}</h1>
               {this.renderPlans()}
+            </div>
+          )}
+          {fetchedData && activityRequests.length > 0 && (
+            <div id="groupActivitiesContainer" className="horizontalCenter">
+              <h1 className="">{texts.activityRequestsHeader}</h1>
+              {this.renderactivityRequests()}
             </div>
           )}
         </div>

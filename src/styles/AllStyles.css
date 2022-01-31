@@ -286,6 +286,35 @@
 }
 /*ACTIVITY SCREEN END*/
 
+/*ACTIVITY REQUEST SCREEN*/
+#activityRequestMainContainer {
+  margin-top: 5.6rem;
+  padding: 5%;
+}
+#activityRequestMainContainer i {
+  color: rgba(0, 0, 0, 0.87);
+}
+#activityRequestMainContainer .row {
+  padding: 0 5%;
+  align-items: center;
+}
+/* #activityRequestMainContainer .timeslotPreview {
+  max-width: none;
+} */
+.acceptButton {
+  cursor: pointer;
+  margin: 1rem;
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: #00838f;
+  color: #ffffff;
+  font-size: 3rem;
+  text-align: center;
+  line-height: 3.6rem;
+  border: none;
+}
+/*ACTIVITY REQUEST SCREEN END*/
+
 /*ADDITIONAL INFO SCREEN*/
 #additionalInfoScreenHeaderContainer {
   height: 6rem;
@@ -1376,19 +1405,25 @@
 #editProfileInfoContainer {
   margin-bottom: 2rem;
 }
+#editProfileInfoContainer .col-1-10 {
+  padding: 1rem;
+}
+#editProfileInfoContainer .col-2-10 {
+  padding: 1rem;
+}
+#editProfileInfoContainer .col-3-10 {
+  padding: 1rem;
+}
+#editProfileInfoContainer .col-4-10 {
+  padding: 1rem;
+}
 #editProfileInfoContainer .col-5-10 {
   padding: 1rem;
 }
 #editProfileInfoContainer .col-6-10 {
   padding: 1rem;
 }
-#editProfileInfoContainer .col-3-10 {
-  padding: 1rem;
-}
 #editProfileInfoContainer .col-8-10 {
-  padding: 1rem;
-}
-#editProfileInfoContainer .col-2-10 {
   padding: 1rem;
 }
 #editProfileInfoContainer span {
@@ -1398,6 +1433,9 @@
   position: absolute;
   bottom: 2%;
   left: 5%;
+}
+.editProfileInputField:disabled {
+  opacity: 60%;
 }
 
 /*EDIT PROFILE SCREEN END*/
@@ -1494,6 +1532,21 @@
   margin-left: auto;
   margin-right: auto;
   background-color: #be1622;
+}
+.inviteButton {
+  border: none;
+  padding: 0 0;
+  line-height: 3.6rem;
+  border-radius: 3px;
+  color: #ffffff;
+  height: 3.6rem;
+  text-align: center;
+  font-size: 1.4rem;
+  max-width: 45rem;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #00838f;
 }
 .participantsText {
   font-size: 1.6rem;

@@ -252,6 +252,14 @@ class TimeslotScreen extends React.Component {
     history.push(route);
   };
 
+  handleSendInvites = () => {
+    const { history } = this.props;
+    const { pathname } = history.location;
+    history.push({
+      pathname: `${pathname}/invite`
+    });
+  }
+
   handleEmergency = () => {
     const { history } = this.props;
     const { pathname } = history.location;
@@ -916,6 +924,15 @@ class TimeslotScreen extends React.Component {
           </div>
           <div className="row no-gutters" style={rowStyle}>
             {this.renderParticipants("admins")}
+          </div>
+          <div className="row no-gutters" style={rowStyle}>
+            <button
+              className="inviteButton"
+              type="button"
+              onClick={this.handleSendInvites}
+            >
+              {texts.sendInvites}
+            </button>
           </div>
         </div>
         {timeslot.extendedProperties.shared.status !== "completed" &&

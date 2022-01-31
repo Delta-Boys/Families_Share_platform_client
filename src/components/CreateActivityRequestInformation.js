@@ -5,33 +5,28 @@ import { CirclePicker } from "react-color";
 import withLanguage from "./LanguageContext";
 import Texts from "../Constants/Texts";
 
-class CreateActivityInformation extends React.Component {
+class CreateActivityRequestInformation extends React.Component {
   constructor(props) {
     super(props);
     const {
       handleSubmit,
       name,
-      location,
       description,
-      cost,
-      color,
-      link,
-      greenPassRequired
+      color
     } = this.props;
-    this.state = { color, cost, description, link, location, name, greenPassRequired };
-    this.state.greenPassRequired = false;
+    this.state = { color, description, name };
     handleSubmit(this.state, this.validate(this.state));
     autosize(document.querySelectorAll("textarea"));
   }
 
-  validate = (state) => {
+  validate = state => {
     if (state.color && state.name) {
       return true;
     }
     return false;
   };
 
-  handleChange = (event) => {
+  handleChange = event => {
     const state = Object.assign({}, this.state);
     const { name, value } = event.target;
     const { handleSubmit } = this.props;
@@ -40,13 +35,7 @@ class CreateActivityInformation extends React.Component {
     this.setState(state);
   };
 
-  handleGreenPassCheck = () => {
-    var { greenPassRequired } = this.state;
-    greenPassRequired = !greenPassRequired;
-    this.setState({ greenPassRequired });
-  };
-
-  handleColorChange = (color) => {
+  handleColorChange = color => {
     const { handleSubmit } = this.props;
     const state = Object.assign({}, this.state);
     state.color = color.hex;
@@ -56,8 +45,8 @@ class CreateActivityInformation extends React.Component {
 
   render() {
     const { language } = this.props;
-    const { name, color, description, location, link } = this.state;
-    const texts = Texts[language].createActivityInformation;
+    const { name, description, color } = this.state;
+    const texts = Texts[language].createActivityRequestInformation;
     const rowStyle = { minHeight: "7rem" };
     return (
       <div id="createActivityInformationContainer">
@@ -87,57 +76,13 @@ class CreateActivityInformation extends React.Component {
               className="center"
               placeholder={texts.description}
               value={description}
-              onChange={(event) => {
+              onChange={event => {
                 this.handleChange(event);
                 autosize(document.querySelectorAll("textarea"));
               }}
             />
           </div>
         </div>
-        <div className="row no-gutters" style={rowStyle}>
-          <div className="col-2-10">
-            <i className="fas fa-map-marker-alt center" />
-          </div>
-          <div className="col-8-10">
-            <input
-              type="text"
-              name="location"
-              placeholder={texts.location}
-              value={location}
-              className="center"
-              onChange={this.handleChange}
-            />
-          </div>
-        </div>
-        <div className="row no-gutters" style={rowStyle}>
-          <div className="col-2-10">
-            <i className="fas fa-link center" />
-          </div>
-          <div className="col-8-10">
-            <input
-              type="text"
-              name="link"
-              placeholder={texts.link}
-              value={link}
-              className="center"
-              onChange={this.handleChange}
-            />
-          </div>
-        </div>
-
-        <div className="row no-gutters">
-          <div className="col-2-10">
-            <i className="fas fa-biohazard center" />
-          </div>
-          <div className="col-6-10">
-            <h1 className="verticalCenter">{texts.greenPassRequiredYes}</h1>
-          </div>
-          <div className="col-1-10">
-            <input type="checkbox" name="greenPassRequired"
-                   onChange={this.handleGreenPassCheck} />
-          </div>
-        </div>
-
         <div className="row no-gutters" style={rowStyle}>
           <div className="col-2-10">
             <i
@@ -167,16 +112,12 @@ class CreateActivityInformation extends React.Component {
   }
 }
 
-CreateActivityInformation.propTypes = {
+CreateActivityRequestInformation.propTypes = {
   name: PropTypes.string,
-  location: PropTypes.string,
   description: PropTypes.string,
-  cost: PropTypes.number,
   color: PropTypes.string,
   handleSubmit: PropTypes.func,
-  language: PropTypes.string,
-  link: PropTypes.string,
-  greenPassRequired: PropTypes.bool
+  language: PropTypes.string
 };
 
-export default withLanguage(CreateActivityInformation);
+export default withLanguage(CreateActivityRequestInformation);

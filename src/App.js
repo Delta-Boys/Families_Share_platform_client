@@ -89,6 +89,10 @@ const EditActivityScreen = Loadable({
   loader: () => import("./components/EditActivityScreen"),
   loading: () => Loading
 });
+const EditActivityRequestScreen = Loadable({
+  loader: () => import("./components/EditActivityRequestScreen"),
+  loading: () => Loading
+});
 const AdditionalInfoScreen = Loadable({
   loader: () => import("./components/AdditionalInfoScreen"),
   loading: () => Loading
@@ -105,8 +109,20 @@ const ActivityScreen = Loadable({
   loader: () => import("./components/ActivityScreen"),
   loading: () => Loading
 });
+const ActivityRequestScreen = Loadable({
+  loader: () => import("./components/ActivityRequestScreen"),
+  loading: () => Loading
+})
+const AcceptActivityRequestScreen = Loadable({
+  loader: () => import("./components/AcceptActivityRequestScreen"),
+  loading: () => Loading
+})
 const CreateActivityScreen = Loadable({
   loader: () => import("./components/CreateActivityScreen"),
+  loading: () => Loading
+});
+const CreateActivityRequestScreen = Loadable({
+  loader: () => import("./components/CreateActivityRequestScreen"),
   loading: () => Loading
 });
 const CreatePlanScreen = Loadable({
@@ -147,6 +163,10 @@ const TimeslotScreen = Loadable({
 });
 const TimeslotEmergencyScreen = Loadable({
   loader: () => import("./components/TimeslotEmergencyScreen"),
+  loading: () => Loading
+});
+const TimeslotInviteScreen = Loadable({
+  loader: () => import("./components/TimeslotInviteScreen"),
   loading: () => Loading
 });
 const EditTimeslotScreen = Loadable({
@@ -320,6 +340,11 @@ class App extends React.Component {
               />
               <PrivateRoute
                 exact
+                path="/groups/:groupId/activityrequests/create"
+                component={CreateActivityRequestScreen}
+              />
+              <PrivateRoute
+                exact
                 path="/groups/:groupId/plans/:planId/edit"
                 component={EditPlanScreen}
               />
@@ -351,6 +376,11 @@ class App extends React.Component {
                 component={TimeslotEmergencyScreen}
               />
               <PrivateRoute
+                exact
+                path="/groups/:groupId/activities/:activityId/timeslots/:timeslotId/invite"
+                component={TimeslotInviteScreen}
+              />
+              <PrivateRoute
                 path="/groups/:groupId/activities/:activityId/timeslots/:timeslotId"
                 component={TimeslotScreen}
               />
@@ -362,6 +392,18 @@ class App extends React.Component {
               <PrivateRoute
                 path="/groups/:groupId/activities/:activityId"
                 component={ActivityScreen}
+              />
+              <PrivateRoute
+                path="/groups/:groupId/activityRequests/:activityRequestId/edit"
+                component={EditActivityRequestScreen}
+              />
+              <PrivateRoute
+                path="/groups/:groupId/activityRequests/:activityRequestId/accept"
+                component={AcceptActivityRequestScreen}
+              />
+              <PrivateRoute
+                path="/groups/:groupId/activityRequests/:activityRequestId"
+                component={ActivityRequestScreen}
               />
               <PrivateRoute
                 exact

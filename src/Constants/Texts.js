@@ -220,6 +220,12 @@ const en = {
       "If you save these edits all participants will be unsubscribed. Confirm edits?",
     deleteConfirm: "Are you sure you want to delete this timeslot?"
   },
+  timeslotInviteScreen: {
+    title: "Invite to",
+    confirmInvite: "Are you sure you want to invite this person?",
+    inviteSent: "Invite submitted",
+    inviteFailde: "Failed to submit invite",
+  },
   timeslotScreen: {
     ongoing: "Ongoing",
     completed: "Completed",
@@ -248,6 +254,7 @@ const en = {
     child: "child",
     children: "Children",
     emergency: "EMERGENCY",
+    sendInvites: "Invite other user",
     signup: "signed up",
     userSubscribe: "You have added yourself to the activity",
     userUnsubscribe: "You have removed yourself from the activity",
@@ -833,9 +840,11 @@ const en = {
     exportConfirm: "Are you sure you want to export the group agenda?",
     activitiesHeader: "Activities of the group",
     plansHeader: "Pending plans",
+    activityRequestsHeader: "Outstanding activity requests",
     export: "Export agenda",
     newPlan: "Advanced planning",
-    newActivity: "New activity"
+    newActivity: "New activity",
+    newActivityRequest: "New activity request"
   },
   activityListItem: {
     every: "Every",
@@ -936,6 +945,8 @@ const en = {
       "You are not yet in a group, use the lateral menu to find one",
     myActivitiesPrompt:
       "Here you will see your future activities after you have signed up for one or more groups",
+    myTimeslotInvites: "My invites",
+    invitedTo: " were invited to:",
     joinPrompt: "JOIN GROUP",
     createPrompt: "CREATE GROUP"
   },
@@ -987,7 +998,12 @@ const en = {
     email: "Personal",
     mobile: "Mobile",
     home: "Home",
-    unspecified: "Unspecified"
+    unspecified: "Unspecified",
+    status: "Status",
+    possibleStatus_available: "Available",
+    possibleStatus_work: "At work",
+    possibleStatus_vacation: "On vacation",
+    possibleStatus_other: "Insert personalized status"
   },
   profileScreen: {
     privateProfile: "Profile is private"
@@ -1014,7 +1030,16 @@ const en = {
     visible: "Visible profile",
     invisible: "Invisible Profile",
     cityErr: "City doesn't exist",
-    requiredErr: "Please fill out this field."
+    requiredErr: "Please fill out this field.",
+    status: "Status",
+    possibleStatus_available: "Available",
+    possibleStatus_work: "At work",
+    possibleStatus_vacation: "On vacation",
+    possibleStatus_other: "Insert personalized status",
+    minutes: "minutes",
+    hours: "hours",
+    days: "days",
+    insertValue: "Insert value"
   },
   editGroupScreen: {
     phone: "Phone",
@@ -1140,6 +1165,30 @@ const en = {
       "I acknowledge that this information will be disclosed with the group members " +
       "directly involved in the childcare activities."
   },
+  createActivityRequestScreen: {
+    backNavTitle: "New activity request"
+  },
+  createActivityRequestStepper: {
+    pendingMessage: "The activity is pending confirmation from an admin",
+    continue: "Continue",
+    cancel: "Cancel",
+    finish: "Create",
+    save: "Save",
+    stepLabels: ["Children", "Information", "Date"]
+  },
+  createActivityRequestChildren: {
+    noChildrenError: "Activity request requires children"
+  },
+  createActivityRequestInformation: {
+    color: "Color of the request",
+    description: "Description (optional)",
+    name: "Name of the request"
+  },
+  createActivityRequestDate: {
+    header: "Select a day",
+    from: "From",
+    to: "To"
+  },
   createActivityScreen: {
     backNavTitle: "New activity"
   },
@@ -1156,7 +1205,8 @@ const en = {
     color: "Color of the activity",
     description: "Description (optional)",
     name: "Name of the activity",
-    location: "Location (optional)"
+    location: "Location (optional)",
+    greenPassRequiredYes: "Green pass required",
   },
   createActivityDates: {
     header: "Select one or more days",
@@ -1186,6 +1236,16 @@ const en = {
     confirm: "OK",
     cancel: "CANCEL"
   },
+  activityRequestScreen: {
+    volunteers: "Volunteers",
+    children: "Children",
+    color: "Color",
+    deleteDialogTitle: "Are you sure you want to delete this activity?",
+    delete: "Delete",
+    infoHeader: "Activity Request details:",
+    candidateActivities: "Possible activities",
+    confirmationSuccessful: "Activity participation confirmed",
+  },
   activityScreen: {
     pdfToaster:
       "The activity is being exported in pdf format. You will shorty receive it via e-mail",
@@ -1204,7 +1264,9 @@ const en = {
     exportExcel: "Export Excel",
     every: "Every",
     of: "of",
-    infoHeader: "Activity Info:"
+    infoHeader: "Activity Info:",
+    greenPassRequired: "A valid green pass is required",
+    greenPassNotRequired: "No valid green pass is required"
   },
   timeslotsList: {
     fixed: "fixed",
@@ -1271,7 +1333,26 @@ const en = {
     description: "Description (optional)",
     name: "Name of the activity",
     save: "SAVE",
-    location: "Location (optional)"
+    location: "Location (optional)",
+    greenPassRequiredYes: "Green pass required",
+  },
+  editActivityRequestScreen: {
+    backNavTitle: "Edit Activity Request",
+    color: "Color of the request",
+    description: "Description (optional)",
+    name: "Name of the request",
+    to: "To",
+    from: "From",
+    save: "SAVE",
+  },
+  acceptActivityRequestScreen: {
+    backNavTitle: "Accept Activity Request",
+    color: "Color",
+    description: "Description (optional)",
+    name: "Name of the new activity",
+    location: "Location (optional)",
+    pendingMessage: "The activity is pending confirmation from an admin",
+    createdMessage: "",
   },
   agendaView: {
     timeslots: "Timeslots",
@@ -3563,7 +3644,12 @@ const it = {
     email: "Contatto personale ",
     mobile: "Cellulare",
     home: "Telefono",
-    unspecified: "Non specificato"
+    unspecified: "Non specificato",
+    status: "Stato",
+    possibleStatus_available: "Disponibile",
+    possibleStatus_work: "Al lavoro",
+    possibleStatus_vacation: "In vacanza",
+    possibleStatus_other: "Inserisci stato personalizzato"
   },
   profileScreen: {
     privateProfile: "Il profilo è privato"
@@ -3590,7 +3676,16 @@ const it = {
     visible: "Profilo visibile",
     invisible: "Profilo non visibile",
     cityError: "Città non presente",
-    requiredErr: "Perfavore compila questo campo."
+    requiredErr: "Perfavore compila questo campo.",
+    status: "Stato",
+    possibleStatus_available: "Disponibile",
+    possibleStatus_work: "Al lavoro",
+    possibleStatus_vacation: "In vacanza",
+    possibleStatus_other: "Inserisci stato personalizzato",
+    minutes: "minuti",
+    hours: "ore",
+    days: "giorni",
+    insertValue: "Inserisci valore"
   },
   editGroupScreen: {
     email: "E-mail",
@@ -3733,7 +3828,8 @@ const it = {
     color: "Colore dell'attività",
     description: "Descrizione (facoltativo)",
     name: "Titolo dell'attività",
-    location: "Posizione (facoltativo)"
+    location: "Posizione (facoltativo)",
+    greenPassRequiredYes: "Green pass richiesto",
   },
   createActivityDates: {
     header: "Seleziona uno o più giorni",
@@ -3779,7 +3875,9 @@ const it = {
     every: "Ogni",
     of: "di",
     deleteDialogTitle: "Confermi di eliminare questa attività?",
-    infoHeader: "Informazioni"
+    infoHeader: "Informazioni",
+    greenPassRequired: "Un green pass valido è richiesto",
+    greenPassNotRequired: "Non è necessario essere in possesso di un green pass"
   },
   timeslotsList: {
     fixed: "fisso",
@@ -3847,7 +3945,8 @@ const it = {
     description: "Descrizione (facoltativo)",
     name: "Nome dell'attività",
     save: "SALVA",
-    location: "Posizione (facoltativo)"
+    location: "Posizione (facoltativo)",
+    greenPassRequiredYes: "Green pass richiesto"
   },
   agendaView: {
     timeslots: "Orari",

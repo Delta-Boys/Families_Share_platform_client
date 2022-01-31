@@ -24,7 +24,7 @@ const handleTimeslots = (timeslots, usersChildren) => {
   const userId = JSON.parse(localStorage.getItem("user")).id;
   const sortedTimeslots = timeslots.sort((a, b) => {
     return moment.utc(a.start.dateTime).diff(moment.utc(b.start.dateTime));
-  });
+  }).filter(t => t.type === undefined || t.type === 'activity' );
   for (let j = 0; j < sortedTimeslots.length; j += 1) {
     const parents = JSON.parse(
       sortedTimeslots[j].extendedProperties.shared.parents

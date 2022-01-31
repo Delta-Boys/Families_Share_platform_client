@@ -37,8 +37,10 @@ const muiTheme = createMuiTheme({
       }
     },
     MuiButtonBase: {
-      disabled: {
-        opacity: 0.1
+      root: {
+        disabled: {
+          opacity: 0.1
+        }
       }
     }
   }
